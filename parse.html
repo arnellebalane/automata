@@ -9,13 +9,17 @@
   <script src="javascripts/regex2nfa.js"></script>
   <script src="javascripts/nfa2dfa.js"></script>
   <script src="javascripts/nfa-visualizer.js"></script>
-  <script src="javascripts/application.js"></script>
+  <script src="javascripts/parse.js"></script>
   <title>Automata</title>
 </head>
 
 <body>
   <main class="parse">
     <div id="container"></div>
+    <section id="actions" class="hidden">
+      <input type="button" value="Test String" class="button">
+      <input type="button" value="Replace" class="button">
+    </section>
 
     <form action="#" method="GET">
       <div class="field block">
@@ -26,7 +30,7 @@
         <label>alphabet</label>
         <input type="text" name="alphabet">
       </div>
-      <input type="submit" value="Parse">
+      <input type="submit" value="Parse" class="button">
     </form>
   </main>
 </body>

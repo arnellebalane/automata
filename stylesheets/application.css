@@ -64,6 +64,33 @@ a:active {
   box-shadow: none;
 }
 
+.button {
+  vertical-align: top;
+  font: normal 1.4rem/1 "Open Sans Light";
+  color: #00406A;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: 1px solid #00406A;
+  box-shadow: 0 2px 0 0 #00406A;
+  padding: 8px 12px;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+}
+
+.button:hover,
+.button:focus {
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 2px 0 0 #ffffff;
+}
+
+.button:active {
+  top: 2px;
+  box-shadow: none !important;
+}
+
 
 
 /** PARSE PAGE **/
@@ -133,33 +160,6 @@ form .field.block input[type="text"] {
   padding: 7px;
 }
 
-form input[type="submit"] {
-  vertical-align: top;
-  font: normal 1.4rem/1 "Open Sans Light";
-  color: #00406A;
-  text-transform: uppercase;
-  background-color: transparent;
-  border: 1px solid #00406A;
-  box-shadow: 0 2px 0 0 #00406A;
-  padding: 8px 12px;
-  margin: 0;
-  cursor: pointer;
-  outline: none;
-  position: relative;
-}
-
-form input[type="submit"]:hover,
-form input[type="submit"]:focus {
-  color: #ffffff;
-  border-color: #ffffff;
-  box-shadow: 0 2px 0 0 #ffffff;
-}
-
-form input[type="submit"]:active {
-  top: 2px;
-  box-shadow: none !important;
-}
-
 form.invalid {
   border-color: #600000;
   box-shadow: 0 2px 0 0 #600000;
@@ -177,4 +177,11 @@ form.invalid input[type="submit"] {
   color: #600000;
   border-color: #600000;
   box-shadow: 0 2px 0 0 #600000;
+}
+
+#actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
 }
