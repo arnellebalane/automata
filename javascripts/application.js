@@ -36,8 +36,9 @@ var parser = {
     parser.input.form.on('submit', function(e) {
       e.preventDefault();
       var regex = parser.input.regex.val();
+      var alphabet = parser.input.alphabet.val().trim().split(',').join('');
       try {
-        var nfa = RegexParser.parse(regex);
+        var nfa = RegexParser.parse(regex, alphabet);
         parser.input.form.addClass('hidden');
         NFAVisualizer.visualize('#container', nfa);
       } catch (error) {
