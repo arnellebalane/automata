@@ -4,15 +4,17 @@ $(document).ready(function() {
 });
 
 var parse = {
-  input: { form: null, regex: null, alphabet: null },
+  input: { form: { regex: null, string: null }, regex: null, alphabet: null, string: null },
   output: { nfa: null, dfa: null },
   initialize: function() {
-    parse.input.form = $('main.parse form');
-    parse.input.regex = $('main.parse form input[type="text"][name="regex"]');
-    parse.input.alphabet = $('main.parse form input[type="text"][name="alphabet"]');
+    parse.input.form.regex = $('main.parse form#regex-input');
+    parse.input.form.string = $('main.parse form#string-input');
+    parse.input.regex = parse.input.form.regex.find('input[type="text"][name="regex"]');
+    parse.input.alphabet = parse.input.form.regex.find('input[type="text"][name="alphabet"]');
+    parse.input.string = parse.input.form.string.find('input[type="text"][name="string"]');
 
-    parse.input.form.find('input[type="text"]').on('keydown', function(e) {
-      parse.input.form.removeClass('invalid');
+    parse.input.form.regex.find('input[type="text"]').on('keydown', function(e) {
+      parse.input.form.regex.removeClass('invalid');
     });
 
     parse.input.regex.on('keyup', function(e) {
@@ -35,17 +37,17 @@ var parse = {
       }
     });
 
-    parse.input.form.on('submit', function(e) {
+    parse.input.form.regex.on('submit', function(e) {
       e.preventDefault();
       var regex = parse.input.regex.val();
       var alphabet = parse.input.alphabet.val().trim().split(',').join('');
       try {
         parse.output.nfa = RegexParser.parse(regex, alphabet);
-        parse.input.form.addClass('hidden');
+        parse.input.form.regex.addClass('hidden');
         NFAVisualizer.visualize('#container', parse.output.nfa);
         $('#actions').removeClass('hidden');
       } catch (error) {
-        parse.input.form.addClass('invalid');
+        parse.input.form.regex.addClass('invalid');
         var input = document.querySelector('.parse input[name="regex"]');
         input.setCustomValidadity(error.messages);
       }
@@ -53,7 +55,8 @@ var parse = {
   },
   actions: function() {
     $('.button[data-action="test-string"]').on('click', function() {
-      
+      $('#string-input').toggleClass('hidden');
+      $('#string-input input[type="text"]').focus();
     });
 
     $('.button[data-action="convert-to-dfa"]').on('click', function() {
@@ -68,8 +71,38 @@ var parse = {
       parse.output.dfa = null;
       $('#container').empty();
       $('.labels[for="#container"]').remove();
-      parse.input.form.removeClass('hidden');
-      $('#actions').addClass('hidden');
+      $('#actions, #indicators').addClass('hidden');
+      parse.input.string.val('');
+      parse.input.form.regex.removeClass('hidden');
+      parse.input.regex.focus();
+    });
+
+    parse.input.form.string.on('submit', function(e) {
+      e.preventDefault();
+      var start = $('circle[label="q0"]');
+      $('#mover').removeClass('hidden').css({ 'top': start.offset().top - 5 + 'px', 'left': start.offset().left - 5 + 'px' });
+      $('#input').removeClass('accepted rejected');
+      $('#indicators').removeClass('hidden');
+      var string = parse.input.string.val().trim();
+      var events = [];
+      parse.output[parse.output.dfa ? 'dfa' : 'nfa'].addEventListener('yield', function(e) {
+        events.push(e);
+      });
+      var accepted = parse.output[parse.output.dfa ? 'dfa' : 'nfa'].accepts(string);
+
+      display();
+      function display() {
+        if (events.length) {
+          var event = events.shift();
+          var state = $('circle[label="' + event.state.label + '"]');
+          $('#mover').css({ 'top': state.offset().top - 5 + 'px', 'left': state.offset().left - 5 + 'px' });
+          $('#input').text(event.input);
+          setTimeout(display, 1000);
+        } else {
+          $('#input').text(accepted ? 'accepted' : 'rejected').addClass(accepted ? 'accepted' : 'rejected');
+          $('#mover').addClass('hidden');
+        }
+      }
     });
   }
 };

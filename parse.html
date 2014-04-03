@@ -16,16 +16,24 @@
 <body>
   <main class="parse">
     <div id="container"></div>
+    <div id="indicators" class="hidden">
+      <div id="mover"></div>
+      <p id="input"></p>
+    </div>
     <section id="actions" class="hidden">
       <input type="button" value="Test String" class="button" data-action="test-string">
       <input type="button" value="Convert to DFA" class="button" data-action="convert-to-dfa">
       <input type="button" value="Replace" class="button" data-action="replace">
+      <form action="#" method="GET" id="string-input" class="hidden">
+        <input type="text" name="string">
+        <input type="submit" value="Test" class="button">
+      </form>
     </section>
 
-    <form action="#" method="GET">
+    <form action="#" method="GET" id="regex-input">
       <div class="field block">
         <label>regular expression</label>
-        <input type="text" name="regex">
+        <input type="text" name="regex" autofocus>
       </div>
       <div class="field inline">
         <label>alphabet</label>

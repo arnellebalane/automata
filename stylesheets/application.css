@@ -185,3 +185,47 @@ form.invalid input[type="submit"] {
   right: 10px;
   z-index: 10;
 }
+
+#string-input {
+  width: auto;
+  border: none;
+  box-shadow: none;
+  margin-top: 5px;
+  padding: 0;
+}
+
+#string-input input[type="text"] {
+  width: 274px;
+}
+
+#mover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  width: 33px;
+  height: 33px;
+  border: 2px solid #014421;
+  border-radius: 50%;
+  -webkit-transition: all 300ms ease;
+  -moz-transition: all 300ms ease;
+  -o-transition: all 300ms ease;
+  -ms-transition: all 300ms ease;
+  transition: all 300ms ease;
+}
+
+#input {
+  position: absolute;
+  top: 100px;
+  right: 30px;
+  font: bold 2rem/1 "Chelsea Market";
+  color: #00406A;
+}
+
+#input.accepted {
+  color: #014421;
+}
+
+#input.rejected {
+  color: #A80000;
+}
