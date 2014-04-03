@@ -110,7 +110,11 @@ NFAVisualizer.visualize = function(selector, nfa) {
           arrowHeadsGroup.appendChild(arrowHead);
         } else {
           var transition = SVG.create('path', { d: 'M' + s.x + ',' + s.y + ' L' + d.x + ',' + d.y, source: sl, destination: dl, symbol: symbol });
-          var label = NFAVisualizer.getTransitionLabel(s, { x1: 0, y1: 0, x2: distance, y2: 0 }, symbol);
+          var control = { x1: 0, y1: 0, x2: distance, y2: 0 };
+          if (s.x > d.x) {
+            control.x2 *= -1;
+          }
+          var label = NFAVisualizer.getTransitionLabel(s, control, symbol);
           label.setAttribute('source', sl);
           label.setAttribute('destination', dl);
           label.setAttribute('symbol', symbol);

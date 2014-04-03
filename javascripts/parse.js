@@ -1,20 +1,22 @@
 $(document).ready(function() {
-  parser.initialize();
+  parse.initialize();
+  parse.actions();
 });
 
-var parser = {
+var parse = {
   input: { form: null, regex: null, alphabet: null },
+  output: { nfa: null, dfa: null },
   initialize: function() {
-    parser.input.form = $('main.parse form');
-    parser.input.regex = $('main.parse form input[type="text"][name="regex"]');
-    parser.input.alphabet = $('main.parse form input[type="text"][name="alphabet"]');
+    parse.input.form = $('main.parse form');
+    parse.input.regex = $('main.parse form input[type="text"][name="regex"]');
+    parse.input.alphabet = $('main.parse form input[type="text"][name="alphabet"]');
 
-    parser.input.form.find('input[type="text"]').on('keydown', function(e) {
-      parser.input.form.removeClass('invalid');
+    parse.input.form.find('input[type="text"]').on('keydown', function(e) {
+      parse.input.form.removeClass('invalid');
     });
 
-    parser.input.regex.on('keyup', function(e) {
-      if (!parser.input.alphabet.hasClass('modified')) {
+    parse.input.regex.on('keyup', function(e) {
+      if (!parse.input.alphabet.hasClass('modified')) {
         var value = $(this).val();
         var symbols = value.replace(/[+*()]/g, '').split('');
         var alphabet = [];
@@ -23,28 +25,51 @@ var parser = {
             alphabet.push(symbol);
           }
         });
-        parser.input.alphabet.val(alphabet.join(','));
+        parse.input.alphabet.val(alphabet.join(','));
       }
     });
 
-    parser.input.alphabet.on('change', function() {
+    parse.input.alphabet.on('change', function() {
       if ($(this).val().trim().length) {
         $(this).addClass('modified');
       }
     });
 
-    parser.input.form.on('submit', function(e) {
+    parse.input.form.on('submit', function(e) {
       e.preventDefault();
-      var regex = parser.input.regex.val();
-      var alphabet = parser.input.alphabet.val().trim().split(',').join('');
+      var regex = parse.input.regex.val();
+      var alphabet = parse.input.alphabet.val().trim().split(',').join('');
       try {
-        var nfa = RegexParser.parse(regex, alphabet);
-        parser.input.form.addClass('hidden');
-        NFAVisualizer.visualize('#container', nfa);
+        parse.output.nfa = RegexParser.parse(regex, alphabet);
+        parse.input.form.addClass('hidden');
+        NFAVisualizer.visualize('#container', parse.output.nfa);
         $('#actions').removeClass('hidden');
       } catch (error) {
-        parser.input.form.addClass('invalid');
+        parse.input.form.addClass('invalid');
+        var input = document.querySelector('.parse input[name="regex"]');
+        input.setCustomValidadity(error.messages);
       }
+    });
+  },
+  actions: function() {
+    $('.button[data-action="test-string"]').on('click', function() {
+      
+    });
+
+    $('.button[data-action="convert-to-dfa"]').on('click', function() {
+      parse.output.dfa = NFAConverter.convert(parse.output.nfa);
+      $('#container').empty();
+      $('.labels[for="#container"]').remove();
+      NFAVisualizer.visualize('#container', parse.output.dfa);
+    });
+
+    $('.button[data-action="replace"]').on('click', function() {
+      parse.output.nfa = null;
+      parse.output.dfa = null;
+      $('#container').empty();
+      $('.labels[for="#container"]').remove();
+      parse.input.form.removeClass('hidden');
+      $('#actions').addClass('hidden');
     });
   }
 };
