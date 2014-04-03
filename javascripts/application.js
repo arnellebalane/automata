@@ -1,14 +1,20 @@
 $(document).ready(function() {
-  parse.initialize();
+  parser.initialize();
 });
 
-var parse = {
-  input: { regex: null, alphabet: null },
+var parser = {
+  input: { form: null, regex: null, alphabet: null },
   initialize: function() {
-    parse.input.regex = $('main.parse form input[type="text"][name="regex"]');
-    parse.input.alphabet = $('main.parse form input[type="text"][name="alphabet"]');
-    parse.input.regex.on('keyup', function(e) {
-      if (!parse.input.alphabet.hasClass('modified')) {
+    parser.input.form = $('main.parse form');
+    parser.input.regex = $('main.parse form input[type="text"][name="regex"]');
+    parser.input.alphabet = $('main.parse form input[type="text"][name="alphabet"]');
+
+    parser.input.form.find('input[type="text"]').on('keydown', function(e) {
+      parser.input.form.removeClass('invalid');
+    });
+
+    parser.input.regex.on('keyup', function(e) {
+      if (!parser.input.alphabet.hasClass('modified')) {
         var value = $(this).val();
         var symbols = value.replace(/[+*()]/g, '').split('');
         var alphabet = [];
@@ -17,13 +23,25 @@ var parse = {
             alphabet.push(symbol);
           }
         });
-        parse.input.alphabet.val(alphabet.join(','));
+        parser.input.alphabet.val(alphabet.join(','));
       }
     });
 
-    parse.input.alphabet.on('change', function() {
+    parser.input.alphabet.on('change', function() {
       if ($(this).val().trim().length) {
         $(this).addClass('modified');
+      }
+    });
+
+    parser.input.form.on('submit', function(e) {
+      e.preventDefault();
+      var regex = parser.input.regex.val();
+      try {
+        var nfa = RegexParser.parse(regex);
+        parser.input.form.addClass('hidden');
+        NFAVisualizer.visualize('#container', nfa);
+      } catch (error) {
+        parser.input.form.addClass('invalid');
       }
     });
   }

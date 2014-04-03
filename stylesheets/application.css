@@ -13,8 +13,12 @@ html {
 
 body {
   height: 100%;
-  background-color: #88D0E2;
+  background-color: #9EDEF6;
   border-top: 1px solid transparent;
+}
+
+.hidden {
+  display: none;
 }
 
 h1 {
@@ -63,7 +67,7 @@ a:active {
 
 
 /** PARSE PAGE **/
-#dfa {
+#container {
   position: absolute;
   top: 0;
   left: 0;
@@ -153,5 +157,24 @@ form input[type="submit"]:focus {
 
 form input[type="submit"]:active {
   top: 2px;
-  box-shadow: none;
+  box-shadow: none !important;
+}
+
+form.invalid {
+  border-color: #600000;
+  box-shadow: 0 2px 0 0 #600000;
+}
+
+form.invalid label {
+  color: #600000;
+}
+
+form.invalid input[type="text"] {
+  border-color: #600000;
+}
+
+form.invalid input[type="submit"] {
+  color: #600000;
+  border-color: #600000;
+  box-shadow: 0 2px 0 0 #600000;
 }
