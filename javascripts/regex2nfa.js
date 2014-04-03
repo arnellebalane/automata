@@ -36,7 +36,7 @@ RegexParser.parse = function(regex, alphabet) {
         concatStack = [];
       }
     } else {
-      var nfa = RegexParser.parse(token.content);
+      var nfa = RegexParser.parse(token.content, alphabet);
       concatStack.push(nfa);
     }
   }
