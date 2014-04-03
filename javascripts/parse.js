@@ -95,7 +95,7 @@ var parse = {
         if (events.length) {
           var event = events.shift();
           var state = $('circle[label="' + event.state.label + '"]');
-          $('#mover').css({ 'top': state.offset().top - 5 + 'px', 'left': state.offset().left - 5 + 'px' });
+          $('#mover').css({ 'top': state.offset().top - 6 + 'px', 'left': state.offset().left - 6 + 'px' });
           $('#input').text(event.input);
           setTimeout(display, 1000);
         } else {

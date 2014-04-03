@@ -219,8 +219,8 @@ form.invalid input[type="submit"] {
   top: 0;
   left: 0;
   z-index: 11;
-  width: 33px;
-  height: 33px;
+  width: 35px;
+  height: 35px;
   border: 2px solid #014421;
   border-radius: 50%;
   -webkit-transition: all 300ms ease;
