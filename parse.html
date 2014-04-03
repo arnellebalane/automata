@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="stylesheets/reset.css">
+  <link rel="stylesheet" href="stylesheets/application.css">
+  <script src="javascripts/jquery.js"></script>
+  <script src="javascripts/regex2nfa.js"></script>
+  <script src="javascripts/nfa2dfa.js"></script>
+  <script src="javascripts/nfa-visualizer.js"></script>
+  <script src="javascripts/application.js"></script>
+  <title>Automata</title>
+</head>
+
+<body>
+  <main class="parse">
+    <div id="dfa"></div>
+
+    <form action="#" method="GET">
+      <div class="field block">
+        <label>regular expression</label>
+        <input type="text" name="regex">
+      </div>
+      <div class="field inline">
+        <label>alphabet</label>
+        <input type="text" name="alphabet">
+      </div>
+      <input type="submit" value="Parse">
+    </form>
+  </main>
+</body>
+</html>
