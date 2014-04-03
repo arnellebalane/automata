@@ -46,46 +46,49 @@ NFAConverter.eClosure = function(nfa, state, eStates) {
 }
 
 NFAConverter.convert = function(nfa) {
-  var dfa = new NFA('ab');
-  var alphabet = ['a', 'b'];
-  var id = 1;
-  var possibleNewStates = [];
-  var finalNFAstates = nfa.getFinalStates();
+  var dfa = new NFA(nfa.alphabet);
+  var alphabet = nfa.alphabet.split('');
+  var labelCtr = 1;
+  var generatedStates = [];
   var finalDFAstates = [];
-  var currentState = nfa.states['q0'];
-  var eclosures = NFAConverter.eClosure(nfa, currentState, []).sort();
+  var finalNFAstates = nfa.getFinalStates();
+
+  var qZeroEClosures = NFAConverter.eClosure(nfa, nfa.states['q0'], []).sort();
   var deadState = {  
     label: "deadState", 
     transitions : {a : "deadState", b : "deadState"}, 
-    eclosure:[]
+    containedStates:[]
   }
+  var hasDeadState = false; 
 
-  possibleNewStates.push({label: "q0", transitions : {}, eclosure: eclosures});
+  generatedStates.push({label: "q0", transitions: {}, containedStates: qZeroEClosures});
 
   var finished = false;
   while (!finished) {
     for (var i = 0; i < alphabet.length; i++) {
-      var leadsTo = [];
+      var statesReached = [];
       var currSymbol = alphabet[i];
-      for (var j = 0; j < possibleNewStates[0].eclosure.length; j++) {
-        if (currSymbol in nfa.states[possibleNewStates[0].eclosure[j]].transitions) {
-          var trans = nfa.states[possibleNewStates[0].eclosure[j]].transitions[currSymbol];
+      var currState = generatedStates[0];
+      for (var j = 0; j < currState.containedStates.length; j++) {
+        var currContainedState = currState.containedStates[j];
+        if (currSymbol in nfa.states[currContainedState].transitions) {
+          var trans = nfa.states[currContainedState].transitions[currSymbol];
           for (var k = 0; k < trans.length; k++) {
-            if (leadsTo.indexOf(trans[k]) == -1) {
-              leadsTo.push(trans[k]);
+            if (statesReached.indexOf(trans[k]) == -1) {
+              statesReached.push(trans[k]);
             }
           }
         }
       }
-
-      if (leadsTo.length == 0) {
-        possibleNewStates[0].transitions[currSymbol] = deadState.label;
+      if (statesReached.length == 0) {
+        hasDeadState = true;
+        currState.transitions[currSymbol] = deadState.label;
         continue;
       }
 
       var eClosuresUnion = [];
-      for (var l = 0; l < leadsTo.length; l++) {
-        var eClosure = NFAConverter.eClosure(nfa, leadsTo[l], []);
+      for (var l = 0; l < statesReached.length; l++) {
+        var eClosure = NFAConverter.eClosure(nfa, statesReached[l], []);
         for (var m = 0; m < eClosure.length; m++) {
           if (eClosuresUnion.indexOf(eClosure[m]) == -1) {
             eClosuresUnion.push(eClosure[m]);
@@ -94,57 +97,54 @@ NFAConverter.convert = function(nfa) {
       }
 
       eClosuresUnion.sort();
-      toBeAdded = {label : "q" + id, transitions: {}, eclosure : eClosuresUnion};
-      toBeAdded.transitions[currSymbol] = "";
-      id++;
-
-      if (contains(finalDFAstates, toBeAdded)) {
-        possibleNewStates[0].transitions[currSymbol] = getLabel(finalDFAstates, toBeAdded);
-        id--;
+      generatedState = {label : "q" + labelCtr, transitions: {}, containedStates : eClosuresUnion};
+      generatedState.transitions[currSymbol] = "";
+      labelCtr++;
+      if (contains(finalDFAstates, generatedState)) {
+        currState.transitions[currSymbol] = getLabel(finalDFAstates, generatedState);
+        labelCtr--;
       } else {
-        if (contains(possibleNewStates, toBeAdded)) {
-          possibleNewStates[0].transitions[currSymbol] = getLabel(possibleNewStates, toBeAdded);
-          id--;
+        if (contains(generatedStates, generatedState)){
+          currState.transitions[currSymbol] = getLabel(generatedStates, generatedState);
+          labelCtr--;
         } else {
-          possibleNewStates[0].transitions[currSymbol] = toBeAdded.label;
-          possibleNewStates.push(toBeAdded);
+          currState.transitions[currSymbol] = generatedState.label;
+          generatedStates.push(generatedState);
         }
       }
     }
 
-    finalDFAstates.push(possibleNewStates.shift());
+    finalDFAstates.push(generatedStates.shift());
 
-    if (possibleNewStates.length == 0) {
+    if (generatedStates.length == 0) {
       finished = true;
-    }
+    }    
   }
 
-  finalDFAstates = setFinalStates(finalDFAstates, finalNFAstates);
-  finalDFAstates.push(deadState);
+    finalDFAstates = setFinalStates(finalDFAstates, finalNFAstates);
+    if (hasDeadState) {
+      finalDFAstates.push(deadState);
+    }
 
-  console.log("omg final DFA states!");
-  console.log(finalDFAstates);
 
   dfa.states = {};
   dfa.statesCount = 0;
   dfa.startState = null;
-  var nStates = {};
+  var convertedStates = {};
+  
   for (var i = 0; i < finalDFAstates.length; i++) {
-    nStates[finalDFAstates[i].label] = dfa.addState();
+    convertedStates[finalDFAstates[i].label] = dfa.addState();
   }
 
-  console.info(nStates);
-
   for (var i = 0; i < finalDFAstates.length; i++) {
-    var s = finalDFAstates[i];
-    var state = nStates[s.label];
-    state.final = s.final || false;
-    for (var symbol in s.transitions) {
-      state.transition(nStates[s.transitions[symbol]], symbol);
+    var unConvState = finalDFAstates[i];
+    var convState = convertedStates[unConvState.label];
+    convState.final = unConvState.final || false;
+    for (var symbol in unConvState.transitions) {
+      convState.transition(convertedStates[unConvState.transitions[symbol]], symbol);
     }
   }
   dfa.setStartState(dfa.getState('q0'));
-  console.warn(dfa);
   return dfa;
 }
 
@@ -164,7 +164,7 @@ function isEqual(array1, array2) {
 
 function contains(source, toCheck) {
   for (var i = 0; i < source.length; i++) {
-    if (isEqual(source[i].eclosure, toCheck.eclosure)) {
+    if (isEqual(source[i].containedStates, toCheck.containedStates)) {
       return true;
     } 
   } 
@@ -173,7 +173,7 @@ function contains(source, toCheck) {
 
 function getLabel(source, toGet) {
   for (var i = 0; i < source.length; i++) {
-    if (isEqual(source[i].eclosure, toGet.eclosure)) {
+    if (isEqual(source[i].containedStates, toGet.containedStates)) {
       return source[i].label;
     }
   }
@@ -190,8 +190,8 @@ function getStateByLabel(finalDFAstates, label) {
 function setFinalStates(finalDFAstates, finalNFAstates) {
   for (var i = 0; i < finalDFAstates.length; i++) {
     for (var j = 0; j < finalNFAstates.length; j++) {
-      for (var k = 0; k < finalDFAstates[i].eclosure.length; k++) {
-        if (finalDFAstates[i].eclosure[k] == finalNFAstates[j].label) {
+      for (var k = 0; k < finalDFAstates[i].containedStates.length; k++) {
+        if (finalDFAstates[i].containedStates[k] == finalNFAstates[j].label) {
           finalDFAstates[i].final = true;
         }
       }
