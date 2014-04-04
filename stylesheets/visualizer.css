@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .labels {
   position: absolute;
 }
@@ -57,64 +56,4 @@ path.indicator {
 path.current {
   stroke: #014924;
   stroke-width: 2px;
-=======
-.labels {
-  position: absolute;
-}
-
-.labels p,
-.labels span {
-  font: normal 10px "Consolas";
-  color: #00406A;
-  position: absolute;
-  -webkit-transform: translate(-55%, -55%);
-}
-
-.labels p.current {
-  color: #ffffff;
-}
-
-svg {
-  display: block;
-}
-
-circle {
-  stroke: #00406A;
-  stroke-width: 2px;
-  fill: #88D0E2;
-}
-
-circle.final {
-  stroke-width: 4px;
-}
-
-circle.control {
-  stroke: #aa0000;
-  stroke-width: 2px;
-  fill: #aa0000;
-}
-
-circle.current {
-  stroke: #014924;
-  fill: #016D36;
-}
-
-path {
-  stroke: #00406A;
-  stroke-width: 1px;
-  fill: none;
-}
-
-path.control {
-  stroke: #aa0000;
-}
-
-path.indicator {
-  stroke-width: 2px;
-}
-
-path.current {
-  stroke: #014924;
-  stroke-width: 2px;
->>>>>>> 392de8e3fbca7d90434372d183b2c9229ac8a636
 }
