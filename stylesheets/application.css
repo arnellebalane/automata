@@ -1,0 +1,247 @@
+*, *:before, *:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  background-color: #9EDEF6;
+  border-top: 1px solid transparent;
+}
+
+.hidden {
+  display: none;
+}
+
+h1 {
+  font: normal 8rem/1 "Chelsea Market";
+  color: #00406A;
+  text-align: center;
+  padding-top: 130px;
+}
+
+h2 {
+  font: normal 3rem/1 "Open Sans Light";
+  color: #00406A;
+  text-align: center;
+  padding-bottom: 50px;
+}
+
+a {
+  display: block;
+  width: 400px;
+  margin: 15px auto 0 auto;
+  font: normal 2rem/1 "Open Sans Light";
+  color: #00406A;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: 1px solid #00406A;
+  border-radius: 3px;
+  padding: 25px;
+  outline: none;
+  box-shadow: 0 2px 0 0 #00406A;
+  position: relative;
+}
+
+a:hover, 
+a:focus {
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 2px 0 0 #ffffff;
+}
+
+a:active {
+  top: 2px;
+  box-shadow: none;
+}
+
+.button {
+  vertical-align: top;
+  font: normal 1.4rem/1 "Open Sans Light";
+  color: #00406A;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: 1px solid #00406A;
+  box-shadow: 0 2px 0 0 #00406A;
+  padding: 8px 12px;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+}
+
+.button:hover,
+.button:focus {
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 2px 0 0 #ffffff;
+}
+
+.button:active {
+  top: 2px;
+  box-shadow: none !important;
+}
+
+#logo {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  z-index: 12;
+  width: auto;
+  font: normal 3rem/1 "Chelsea Market";
+  color: #00406A;
+  text-transform: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+}
+
+
+
+/** PARSE PAGE **/
+#container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+form {
+  width: 450px;
+  margin: 220px auto 0 auto;
+  padding: 30px;
+  border: 1px solid #00406A;
+  border-radius: 3px;
+  box-shadow: 0 2px 0 0 #00406A;
+  position: relative;
+  z-index: 10;
+}
+
+form label {
+  display: inline-block;
+  font: normal 1.4rem/1 "Open Sans Light";
+  color: #00406A;
+  text-transform: uppercase;
+  margin-right: 5px;
+}
+
+form input[type="text"] {
+  font: normal 1.6rem "Consolas";
+  color: #333333;
+  padding: 7px 7px 6px 7px;
+  background-color: #BEE5EF;
+  border: 1px solid #00406A;
+  margin: 0;
+  outline: none;
+}
+
+form input[type="text"]:focus {
+  background-color: #ffffff;
+}
+
+form .field.inline {
+  display: inline-block;
+  width: 319px;
+}
+
+form .field.inline input[type="text"] {
+  width: 244px;
+}
+
+form .field.block {
+  margin-bottom: 5px;
+}
+
+form .field.block label {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+form .field.block input[type="text"] {
+  width: 100%;
+  font-size: 1.8rem;
+  padding: 7px;
+}
+
+form.invalid {
+  border-color: #600000;
+  box-shadow: 0 2px 0 0 #600000;
+}
+
+form.invalid label {
+  color: #600000;
+}
+
+form.invalid input[type="text"] {
+  border-color: #600000;
+}
+
+form.invalid input[type="submit"] {
+  color: #600000;
+  border-color: #600000;
+  box-shadow: 0 2px 0 0 #600000;
+}
+
+#actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+#string-input {
+  width: auto;
+  border: none;
+  box-shadow: none;
+  margin-top: 5px;
+  padding: 0;
+}
+
+#string-input input[type="text"] {
+  width: 274px;
+}
+
+#mover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  width: 35px;
+  height: 35px;
+  border: 2px solid #014421;
+  border-radius: 50%;
+  -webkit-transition: all 300ms ease;
+  -moz-transition: all 300ms ease;
+  -o-transition: all 300ms ease;
+  -ms-transition: all 300ms ease;
+  transition: all 300ms ease;
+}
+
+#input {
+  position: absolute;
+  top: 100px;
+  right: 30px;
+  font: bold 2rem/1 "Chelsea Market";
+  color: #00406A;
+}
+
+#input.accepted {
+  color: #014421;
+}
+
+#input.rejected {
+  color: #A80000;
+}

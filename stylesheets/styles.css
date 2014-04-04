@@ -1,0 +1,268 @@
+/*housekeeping*/
+*, *:before, *:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html {
+  /*font-size: 62.5%;*/
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  background-color: #9EDEF6;
+  border-top: 1px solid transparent;
+}
+
+/*styles*/
+
+
+.hidden {
+  display: none;
+}
+
+@font-face {
+	font-family: 'Trajan Pro';
+	src: url('../fonts/TrajanPro-Regular.ttf');
+}
+
+svg {
+      /*border: 1px solid black;*/
+      z-index: 0;
+}
+#states g {
+  cursor: move;
+  transition: all 0.5s ease;
+}
+#states g:hover circle, #states g:hover text {
+  stroke-width: 3;
+  fill: yellow;
+}
+#states g:active {
+  fill: green;
+}
+text {
+  cursor: move;
+  font: 2em normal 'Trajan Pro';
+  -webkit-user-select: none;
+}
+circle:active {
+  text-shadow: 0 0 3px;
+}
+#transitions text {
+  font: 1em normal Arial;
+  cursor: pointer;
+}
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(255,255,255,0.4);
+  transition: all 0.5s ease;
+  box-shadow: 0 0 3px #333;
+  box-shadow: 0 0 2px #333;
+  z-index: 1;
+  border-radius: 2px;
+}
+.menu form {
+  margin-left: 0em;
+  padding: 1em 0.5em;      
+}
+.menu input {
+  cursor: pointer;
+}
+form {
+  font-family: sans-serif;
+  font-size: 0.75em;
+}
+input[type=checkbox] {
+  /*visibility: hidden;*/
+}
+/*input[type=submit] {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}*/
+
+.button {
+  vertical-align: top;
+  font: normal 1rem/1 "Open Sans Light";
+  color: #00406A;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: 1px solid #00406A;
+  box-shadow: 0 2px 0 0 #00406A;
+  padding: 8px 12px;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+}
+
+.button:hover,
+.button:focus {
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 2px 0 0 #ffffff;
+}
+
+.button:active {
+  top: 2px;
+  box-shadow: none !important;
+}
+
+#logo {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  z-index: 12;
+  width: auto;
+  font: normal 2rem/1 "Chelsea Market";
+  color: #00406A;
+  text-transform: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  text-decoration: none;
+}
+
+#container {
+  width: 100%;
+  height: 600px;
+  /*border: 1px solid blue;*/
+}
+
+.labels {
+  position: absolute;
+}
+
+.labels p,
+.labels span {
+  font: normal 10px "Consolas";
+  color: #00406A;
+  position: absolute;
+  -webkit-transform: translate(-55%, -55%);
+}
+
+#container .labels p.current {
+  color: #ffffff;
+}
+
+#container svg {
+  display: block;
+}
+
+#container circle {
+  stroke: #00406A;
+  stroke-width: 2px;
+  fill: #88D0E2;
+}
+
+#container circle.final {
+  stroke-width: 4px;
+}
+
+#container circle.control {
+  stroke: #aa0000;
+  stroke-width: 2px;
+  fill: #aa0000;
+}
+
+#container circle.current {
+  stroke: #014924;
+  fill: #016D36;
+}
+
+#container path {
+  stroke: #00406A;
+  stroke-width: 1px;
+  fill: none;
+}
+
+#container path.control {
+  stroke: #aa0000;
+}
+
+#container path.indicator {
+  stroke-width: 2px;
+}
+
+#container path.current {
+  stroke: #014924;
+  stroke-width: 2px;
+}
+
+#actions {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+#actions input[type="button"] {
+  float: right;
+  margin-bottom: 5px;
+}
+
+#string-input {
+  width: auto;
+  border: none;
+  box-shadow: none;
+  margin-top: 5px;
+  padding: 0;
+}
+
+#string-input input[type="text"] {
+  width: 274px;
+}
+
+#mover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  width: 35px;
+  height: 35px;
+  border: 2px solid #014421;
+  border-radius: 50%;
+  -webkit-transition: all 300ms ease;
+  -moz-transition: all 300ms ease;
+  -o-transition: all 300ms ease;
+  -ms-transition: all 300ms ease;
+  transition: all 300ms ease;
+}
+
+#input {
+  position: fixed;
+  top: 100px;
+  right: 30px;
+  font: bold 2rem/1 "Chelsea Market";
+  color: #00406A;
+}
+
+#input.accepted {
+  color: #014421;
+}
+
+#input.rejected {
+  color: #A80000;
+}
+
+form input[type="text"] {
+  font: normal 16px "Consolas";
+  color: #333333;
+  padding: 7px 7px 6px 7px;
+  background-color: #BEE5EF;
+  border: 1px solid #00406A;
+  margin: 0;
+  outline: none;
+}
+
+form input[type="text"]:focus {
+  background-color: #ffffff;
+}
