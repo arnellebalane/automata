@@ -50,6 +50,7 @@ JSFlap.transform = function(selector) {
     if ('active-state' in JSFlap.values) {
       JSFlap.dragState(e, JSFlap.values['active-state']);
     }
+
     if ('active-transition' in JSFlap.values) {
       JSFlap.dragTransition(e, JSFlap.values['active-transition']);
     }
@@ -71,9 +72,8 @@ JSFlap.transform = function(selector) {
       if (e.target.nodeName == 'circle') {
         JSFlap.removeState(e, selector);
       }
+      delete JSFlap.values['delete-state'];
     }
-    delete JSFlap.values['delete-state'];
-
   });
 }
 
@@ -99,11 +99,11 @@ JSFlap.removeState = function(e, selector) {
   var nfa = JSFlap.nfas[selector];
   var labelToRemove = $(e.target).attr('label');
   var state = nfa.removeState( labelToRemove );
-  $('circle[label="'+labelToRemove+'"]').remove();
-  $('p[label="'+labelToRemove+'"]').remove();
-  $('path[source="'+labelToRemove+'"]').remove();
-  $('path[destination="'+labelToRemove+'"]').remove();
-  $('path[for*="'+labelToRemove+'"]').remove();
+  $('circle[label="' + labelToRemove + '"]').remove();
+  $('p[label="' + labelToRemove + '"]').remove();
+  $('path[source="' + labelToRemove + '"]').remove();
+  $('path[destination="' + labelToRemove + '"]').remove();
+  $('path[for*="' + labelToRemove + '"]').remove();
 }
 
 JSFlap.dragState = function(e, state) {
