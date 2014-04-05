@@ -95,6 +95,22 @@ JSFlap.dragState = function(e, state) {
   state.setAttribute('cy', cy);
   $label.style.top = cy + 'px';
   $label.style.left = cx + 'px';
+  var transitions = document.querySelectorAll('path[source="' + label + '"], path[destination="' + label + '"]', svg.transitions);
+  for (var i = 0; i < transitions.length; i++) {
+    var sourceLabel = transitions[i].getAttribute('source');
+    var destinationLabel = transitions[i].getAttribute('destination');
+    var source = document.querySelector('circle[label="' + sourceLabel + '"]', svg.states);
+    var destination = document.querySelector('circle[label="' + destinationLabel + '"]', svg.states);
+    var sx = parseInt(source.getAttribute('cx'));
+    var sy = parseInt(source.getAttribute('cy'));
+    var dx = parseInt(destination.getAttribute('cx'));
+    var dy = parseInt(destination.getAttribute('cy'));
+    transitions[i].setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
+    var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
+    var origin = Math.coordinates({ x: dx, y: dy }, 12, angle);
+    var arrowHead = JSFlap.getArrowHead(origin, angle);
+    document.querySelector('path[for="' + sourceLabel + '-' + destinationLabel + '"]').setAttribute('d', arrowHead.getAttribute('d'));
+  }
 }
 
 JSFlap.startTransition = function(e) {
