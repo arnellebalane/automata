@@ -95,8 +95,6 @@ RegexParser.combine = function(nfas) {
 RegexParser.validate = function(regex, alphabet) {
   var parenthesisStack = [];
   var characterStack = [];
-  var validOperators = ['*', '(', ')', '+'];
-
   for (var i = 0; i < regex.length; i++) {
     var character = regex.charAt(i);
     characterStack.push(character);
@@ -106,21 +104,14 @@ RegexParser.validate = function(regex, alphabet) {
       } else {
         var prevChar = regex.charAt(i - 1);
         var nextChar = regex.charAt(i + 1);
-        if ((alphabet.indexOf(nextChar) < 0 && validOperators.indexOf(nextChar) < 0) || nextChar == ')' || nextChar == '+'
-            || (alphabet.indexOf(prevChar) < 0 && validOperators.indexOf(prevChar) < 0) || prevChar == '(' || prevChar == '+') {
+        if ((alphabet.indexOf(nextChar) < 0 && nextChar != '*') || nextChar == ')' || nextChar == '+'
+            || (alphabet.indexOf(prevChar) < 0 && prevChar != '*') || prevChar == '(' || prevChar == '+') {
           return false;
         }
       }
     } else if (character == '*') {
-      if (i == regex.length - 1 && (regex.charAt(i - 1) == '+' || regex.length == 1)) {
-        return false; 
-      } else if ((validOperators.indexOf(characterStack[characterStack.length - 1]) > -1 && character !='*') || characterStack.length == 0) {
-        var nextChar = regex.charAt(i + 1);
-        if (alphabet.indexOf(nextChar) == -1) {
-          if (nextChar != '(' && nextChar != '*') {
-            return false;
-          }
-        }
+      if (characterStack[characterStack.length - 1] == '+') {
+        return false;
       }
     } else if (character == '(') {
       parenthesisStack.push(character);
@@ -140,12 +131,10 @@ RegexParser.clean = function(regex) {
   var finalRegex = '';
   for (var i = 0; i < regex.length; i++) {
     var character = regex.charAt(i);
-    if (!(character == '*' && (finalRegex.charAt(finalRegex.length - 1) == '*' ||
-      finalRegex.charAt(finalRegex.length - 1) == '+' || finalRegex == '' || finalRegex.charAt(finalRegex.length - 1) == '('))) {
+    if (!(character == '*' && (finalRegex.charAt(finalRegex.length - 1) == '*' || finalRegex == ''))) {
       finalRegex += character;
     } 
   }
-  console.log(finalRegex);
   return finalRegex;
 }
 
@@ -170,6 +159,16 @@ NFA.prototype.addState = function(label) {
 
 NFA.prototype.getState = function(label) {
   return this.states[label];
+}
+
+NFA.prototype.removeState = function(label) {
+  if (label in this.states) {
+    var state = this.states[label];
+    delete this.states[label];
+    this.statesCount--;
+    return state;
+  }
+  return null;
 }
 
 NFA.prototype.getStartState = function() {
