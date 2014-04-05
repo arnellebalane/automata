@@ -252,7 +252,6 @@ $(document).ready( function(){
 			}
 
 			statesPool['q'+count] = new GState('q'+count, x, y);
-			// if (_NFA.)
 			_NFA.addState('q'+count);
 			if (Object.size(statesPool) <= 1) {
 				startState = statesPool['q'+count];
@@ -305,7 +304,7 @@ $(document).ready( function(){
 			).append(
 				$(document.createElementNS('http://www.w3.org/2000/svg', 'text')).attr(
 					{'x': textX, 'y': textY, 'stroke': 'blue'}
-				).html('[insert symbol here]')
+				).html('[insert alphabet here]')
 			);
 			transitions.push({label: activePath, src: openState.attr('id'), dest: null});
 		}
@@ -345,7 +344,7 @@ $(document).ready( function(){
 				$('#'+activePath).find('text').attr({'x': textX, 'y': textY});
 			}
 
-			var alphabet = prompt('Enter symbols (must be comma-separated):', 'a, b');
+			var alphabet = prompt('Enter alphabets (must be comma-separated):', 'a, b');
 			var elements = alphabet.split(', ');
 
 			for (el in elements) {
@@ -363,8 +362,6 @@ $(document).ready( function(){
 			s_state = statesPool[s_id];
 			c_id = $(closeState.attr('id', $(this).value)).attr('id');
 			c_state = statesPool[c_id];
-
-			console.log(s_state + " " + c_state);
 		
 			transitionArr.push(c_state.label);
 			if (Object.size(s_state.transitions) == 0) {
@@ -416,35 +413,3 @@ function done() {
 	// $(window).scrollTop($('#container').offset().top);
 	$('html, body').animate({scrollTop: $('#container').offset().top}, 500);
 }
-
-$('#actions input[data-action="test-string"]').on('click', function() {
-	$('#string-input').toggleClass('hidden');
-});
-
-$('#string-input').on('submit', function(e) {
-	e.preventDefault();
-	var start = $('circle[label="q0"]');
-  $('#mover').removeClass('hidden').css({ 'top': start.offset().top - 5 + 'px', 'left': start.offset().left - 5 + 'px' });
-  $('#input').removeClass('accepted rejected');
-  $('#indicators').removeClass('hidden');
-  var string = $('#string-input input[name="string"]').val().trim();
-  var events = [];
-  loser.addEventListener('yield', function(e) {
-    events.push(e);
-  });
-  var accepted = loser.accepts(string);
-
-  display();
-  function display() {
-    if (events.length) {
-      var event = events.shift();
-      var state = $('circle[label="' + event.state.label + '"]');
-      $('#mover').css({ 'top': state.offset().top - 6 + 'px', 'left': state.offset().left - 6 + 'px' });
-      $('#input').text(event.input);
-      setTimeout(display, 1000);
-    } else {
-      $('#input').text(accepted ? 'accepted' : 'rejected').addClass(accepted ? 'accepted' : 'rejected');
-      $('#mover').addClass('hidden');
-    }
-  }
-});
