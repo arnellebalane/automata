@@ -194,7 +194,11 @@ NFA.prototype.alphabetContains = function(symbol) {
 }
 
 NFA.prototype.generateStateLabel = function() {
-  return 'q' + this.statesCount;
+  var count = this.statesCount;
+  while ('q' + count in this.states) {
+    count++;
+  }
+  return 'q' + count;
 }
 
 NFA.prototype.concatenate = function(nfa) {
