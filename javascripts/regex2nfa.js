@@ -163,10 +163,25 @@ NFA.prototype.getState = function(label) {
 
 NFA.prototype.removeState = function(label) {
   if (label in this.states) {
-    var state = this.states[label];
+    var _state = this.states[label];
     delete this.states[label];
     this.statesCount--;
-    return state;
+
+    for (var l in this.states) {
+      var state = this.states[l];
+      for (var symbol in state.transitions) {
+        for (var i = 0; i < state.transitions[symbol].length; i++) {
+          if (state.transitions[symbol][i].label == label) {
+            state.transitions[symbol].splice(i--, 1);
+          }
+        }
+        if (!state.transitions[symbol].length) {
+          delete state.transitions[symbol];
+        }
+      }
+    }
+
+    return _state;
   }
   return null;
 }
