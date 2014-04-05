@@ -245,3 +245,14 @@ form.invalid input[type="submit"] {
 #input.rejected {
   color: #A80000;
 }
+
+
+
+/** CONSTRUCT PAGE **/
+#arena {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

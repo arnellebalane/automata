@@ -3,48 +3,42 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="stylesheets/reset.css">
-  <link rel="stylesheet" href="stylesheets/styles.css">
+  <link rel="stylesheet" href="stylesheets/application.css">
+  <link rel="stylesheet" href="stylesheets/visualizer.css">
   <script src="javascripts/jquery.js"></script>
   <script src="javascripts/regex2nfa.js"></script>
   <script src="javascripts/nfa2dfa.js"></script>
   <script src="javascripts/nfa-visualizer.js"></script>
+  <script src="javascripts/jsflap-v2.js"></script>
   <script src="javascripts/construct.js"></script>
   <title>Automata</title>
 </head>
 
 <body>  
-  <svg width="100%" height="600">
-    <g id="transitions"></g>
-    <g id="states"></g>
-  </svg>
-  <div class="menu" id="gContextMenu">
-    <form>
-      <input type="checkbox" value="final">Final State<br>
-      <input type="submit" value="Cancel"><br>
-    </form>
-  </div>
-  <div id="console">
-    <!-- <div>x:<span id="x"></span></div>
-    <div>y:<span id="y"></span></div> -->
-    <!-- <div>openState:<span id="openState"></span></div>
-    <div>activeState:<span id="activeState"></span></div>
-    <div>activePath:<span id="activePath"></span></div> -->
-  </div>
-  <a href="index.html" id="logo">automata</a>
-  <input type="button" value="Done" class="button" onclick="done()">
-  <div id="container">
-  </div>
-  <!-- <svg id="nfa"></svg> -->
-  <script type="text/javascript" src="javascripts/visualizer.js"></script>
-  <script>
-    $('.menu').hide();
-    $(document).mousemove(function(e) {
-      $('#x').html(e.pageX);
-      $('#y').html(e.pageY);
-      $('#openState').html(openState != null ? 'on' : 'off');
-      $('#activeState').html(activeState != null ? 'on' : 'off');
-      $('#activePath').html(activePath != null ? 'on' : 'off');
-    });
-  </script>
+  <main class="construct">
+    <!--
+    <svg width="100%" height="600">
+      <g id="transitions"></g>
+      <g id="states"></g>
+    </svg>
+    <div class="menu" id="gContextMenu">
+      <form>
+        <input type="checkbox" value="final">Final State<br>
+        <input type="submit" value="Cancel"><br>
+      </form>
+    </div>
+    -->
+    <a href="index.html" id="logo">automata</a>
+    <div id="container"></div>
+    <div id="arena"></div>
+    <section id="actions">
+      <input type="button" value="Test String" class="button" data-action="test-string">
+      <input type="button" value="Convert to DFA" class="button" data-action="convert-to-dfa">
+      <form action="#" method="GET" id="string-input" class="hidden">
+        <input type="text" name="string">
+        <input type="submit" value="Test" class="button">
+      </form>
+    </section>
+  </main>
 </body>
 </html>

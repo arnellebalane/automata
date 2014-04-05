@@ -1,5 +1,6 @@
 .labels {
   position: absolute;
+  pointer-events: none;
 }
 
 .labels p,
@@ -16,6 +17,7 @@
 
 svg {
   display: block;
+  cursor: default;
 }
 
 circle {
