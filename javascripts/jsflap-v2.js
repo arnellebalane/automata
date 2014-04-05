@@ -127,7 +127,15 @@ JSFlap.dragState = function(e, state) {
     var sy = parseInt(source.getAttribute('cy'));
     var dx = parseInt(destination.getAttribute('cx'));
     var dy = parseInt(destination.getAttribute('cy'));
-    transitions[i].setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
+    if (source == destination) {
+      var r = source.getAttribute('r');
+      s = { x: sx, y: sy - r};
+      d = { x: dx, y: dy - r};
+      c = { x1: -(r*4), y1: -(r*4), x2: (r*4), y2: -(r*4) };
+      transitions[i].setAttribute('d', JSFlap.generatePathDefinition(s, c , d));
+    } else {
+      transitions[i].setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
+    }
     var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
     var origin = Math.coordinates({ x: dx, y: dy }, 12, angle);
     var arrowHead = JSFlap.getArrowHead(origin, angle);
@@ -181,7 +189,15 @@ JSFlap.endTransition = function(e, transition) {
   var sy = parseInt(source.getAttribute('cy'));
   var dx = parseInt(destination.getAttribute('cx'));
   var dy = parseInt(destination.getAttribute('cy'));
-  transition.setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
+  if (source == destination) {
+    var r = source.getAttribute('r');
+    s = { x: sx, y: sy - r};
+    d = { x: dx, y: dy - r};
+    c = { x1: -(r*4), y1: -(r*4), x2: (r*4), y2: -(r*4) };
+    transition.setAttribute('d', JSFlap.generatePathDefinition(s, c , d));
+  } else {
+    transition.setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
+  }
   transition.setAttribute('destination', destinationLabel);
   transition.setAttribute('label', sourceLabel + '-' + destinationLabel);
   var sourceState = JSFlap.nfas[container].getState(sourceLabel);
@@ -205,6 +221,14 @@ JSFlap.getArrowHead = function(origin, angle) {
   var e2 = Math.coordinates(origin, 6, angle - 25);
   return JSFlap.SVG.create('path', { d: 'M' + e1.x + ',' + e1.y + ' L' + origin.x + ',' + origin.y + ' ' + e2.x + ',' + e2.y });
 }
+
+JSFlap.generatePathDefinition = function(source, control, destination) {
+  return 'M' +  source.x + ',' + source.y 
+    + ' C' + (source.x + control.x1) + ',' + (source.y + control.y1) + ' ' 
+    + (source.x + control.x2) + ',' + (source.y + control.y2) + ' ' 
+    + destination.x + ',' + destination.y;
+}
+
 
 
 JSFlap.SVG = function() {}
