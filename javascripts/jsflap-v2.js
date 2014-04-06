@@ -3,6 +3,7 @@ JSFlap.svgs = {};
 JSFlap.nfas = {};
 JSFlap.values = {};
 JSFlap.prompts = {};
+JSFlap.menus = {};
 
 JSFlap.transform = function(selector) {
   var container = document.querySelector(selector);
@@ -14,6 +15,7 @@ JSFlap.transform = function(selector) {
   var arrowHeads = JSFlap.SVG.create('g', { class: 'arrow-heads' });
   var labels = document.createElement('div');
   var prompt = document.createElement('div');
+  var menu = document.createElement('div');
   labels.setAttribute('class', 'labels');
   labels.setAttribute('for', selector);
   labels.style.top = 0;
@@ -22,6 +24,8 @@ JSFlap.transform = function(selector) {
   labels.style.bottom = 0;
   prompt.innerHTML = JSFlap.templates.promptSymbol;
   prompt = prompt.firstChild;
+  menu.innerHTML = JSFlap.templates.contextMenu;
+  menu = menu.firstChild;
   container.appendChild(svg);
   svg.appendChild(transitions);
   svg.appendChild(arrowHeads);
@@ -30,6 +34,7 @@ JSFlap.transform = function(selector) {
   container.style.position = (position == 'relative' || position == 'absolute') ? position : 'relative';
   container.appendChild(labels);
   container.appendChild(prompt);
+  container.appendChild(menu);
 
   JSFlap.svgs[selector] = { canvas: svg, states: states, transitions: transitions, arrowHeads: arrowHeads, labels: labels };
   JSFlap.nfas[selector] = new NFA('ab');
@@ -37,11 +42,15 @@ JSFlap.transform = function(selector) {
   JSFlap.nfas[selector].statesCount = 0;
   JSFlap.nfas[selector].startState = null;
   JSFlap.prompts[selector] = prompt;
+  JSFlap.menus[selector] = menu;
 
   svg.addEventListener('mousedown', function(e) {
     if ('prompted-transition' in JSFlap.values) {
       JSFlap.removeTransition(JSFlap.values['prompted-transition']);
       delete JSFlap.values['prompted-transition'];
+    } else if ('contextmenu-state' in JSFlap.values) {
+      JSFlap.menus[selector].classList.add('hidden');
+      delete JSFlap.values['contextmenu-state'];
     } else {
       if (e.target.nodeName == 'circle') {
         if (e.shiftKey) {
@@ -83,6 +92,14 @@ JSFlap.transform = function(selector) {
         JSFlap.removeState(e, selector);
       }
       delete JSFlap.values['delete-state'];
+    }
+  });
+
+  svg.addEventListener('contextmenu', function(e) {
+    if (e.target.nodeName == 'circle') {
+      e.preventDefault();
+      JSFlap.showContextMenu(e.target);
+      JSFlap.values['contextmenu-state'] = e.target;
     }
   });
 
@@ -238,7 +255,7 @@ JSFlap.endTransition = function(e, transition) {
     var d = { x: dx, y: dy - r };
     var c = { x1: -(r * 4), y1: -(r * 4), x2: (r * 4), y2: -(r * 4) };
     transition.setAttribute('d', JSFlap.generatePathDefinition(s, c, d));
-    var control = { x: s.x - 45, y: s.y -55 };
+    var control = { x: s.x - 45, y: s.y - 55 };
     angle = Math.angle(d, control);
     origin = Math.coordinates(d, 1, angle);
     prompt.style.top = s.y - 50 + 'px';
@@ -380,6 +397,16 @@ JSFlap.generatePathDefinition = function(source, control, destination) {
     + destination.x + ',' + destination.y;
 }
 
+JSFlap.showContextMenu = function(state) {
+  var container = state.getAttribute('container');
+  var cx = parseInt(state.getAttribute('cx'));
+  var cy = parseInt(state.getAttribute('cy'));
+  var menu = JSFlap.menus[container];
+  menu.style.top = cy + 17 + 'px';
+  menu.style.left = cx + 'px';
+  menu.classList.remove('hidden');
+}
+
 
 
 
@@ -403,3 +430,8 @@ JSFlap.templates = function() {}
 JSFlap.templates.promptSymbol = '<form action="#" method="POST" id="prompt-transition-symbol" class="hidden"> \
                                     <input type="text" name="symbol"> \
                                   </form>';
+
+JSFlap.templates.contextMenu = '<ul id="context-menu" class="hidden"> \
+                                  <li><a href="#" data-action="start-state">Start State</a></li> \
+                                  <li><a href="#" data-action="final-state">Final State</a></li> \
+                                </ul>';
