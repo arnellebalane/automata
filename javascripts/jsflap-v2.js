@@ -63,7 +63,6 @@ JSFlap.transform = function(selector) {
         JSFlap.endTransition(e, JSFlap.values['active-transition']);
       } else {
         JSFlap.cancelTransition(selector);
-        JSFlap.values['active-transition'].remove();
       }
       delete JSFlap.values['active-transition'];
     }
@@ -127,17 +126,22 @@ JSFlap.dragState = function(e, state) {
     var sy = parseInt(source.getAttribute('cy'));
     var dx = parseInt(destination.getAttribute('cx'));
     var dy = parseInt(destination.getAttribute('cy'));
+    var angle = null;
+    var origin = null;
     if (source == destination) {
       var r = source.getAttribute('r');
       s = { x: sx, y: sy - r };
       d = { x: dx, y: dy - r };
       c = { x1: -(r * 4), y1: -(r * 4), x2: (r * 4), y2: -(r * 4) };
       transitions[i].setAttribute('d', JSFlap.generatePathDefinition(s, c, d));
+      var control = { x: s.x - 45, y: s.y -55 };
+      var angle = Math.angle(d, control);
+      var origin = Math.coordinates(d, 1, angle);
     } else {
       transitions[i].setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
+      var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
+      var origin = Math.coordinates({ x: dx, y: dy }, 12, angle);
     }
-    var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
-    var origin = Math.coordinates({ x: dx, y: dy }, 12, angle);
     var arrowHead = JSFlap.getArrowHead(origin, angle);
     document.querySelector('path[for="' + sourceLabel + '-' + destinationLabel + '"]').setAttribute('d', arrowHead.getAttribute('d'));
   }
@@ -171,7 +175,7 @@ JSFlap.dragTransition = function(e, transition) {
   var dx = e.pageX + svg.canvas.offsetLeft;
   var dy = e.pageY + svg.canvas.offsetTop;
   transition.setAttribute('d', 'M' + sx + ',' + sy + 'L' + dx + ',' + dy);
-  document.querySelector('path[for="active-transition"]').remove();
+  document.querySelector('path[for="active-transition"]', svg.arrowHeads).remove();
   var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
   var arrowHead = JSFlap.getArrowHead({ x: dx, y: dy }, angle);
   arrowHead.setAttribute('for', 'active-transition');
@@ -189,23 +193,28 @@ JSFlap.endTransition = function(e, transition) {
   var sy = parseInt(source.getAttribute('cy'));
   var dx = parseInt(destination.getAttribute('cx'));
   var dy = parseInt(destination.getAttribute('cy'));
+  var angle = null;
+  var origin = null;
   if (source == destination) {
     var r = source.getAttribute('r');
     s = { x: sx, y: sy - r };
     d = { x: dx, y: dy - r };
     c = { x1: -(r * 4), y1: -(r * 4), x2: (r * 4), y2: -(r * 4) };
     transition.setAttribute('d', JSFlap.generatePathDefinition(s, c, d));
+    var control = { x: s.x - 45, y: s.y -55 };
+    var angle = Math.angle(d, control);
+    var origin = Math.coordinates(d, 1, angle);
   } else {
     transition.setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
+    var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
+    var origin = Math.coordinates({ x: dx, y: dy }, 12, angle);
   }
   transition.setAttribute('destination', destinationLabel);
   transition.setAttribute('label', sourceLabel + '-' + destinationLabel);
   var sourceState = JSFlap.nfas[container].getState(sourceLabel);
   var destinationState = JSFlap.nfas[container].getState(destinationLabel);
   sourceState.transition(destinationState, 'a');
-  document.querySelector('path[for="active-transition"]').remove();
-  var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
-  var origin = Math.coordinates({ x: dx, y: dy }, 12, angle);
+  document.querySelector('path[for="active-transition"]', svg.arrowHeads).remove();
   var arrowHead = JSFlap.getArrowHead(origin, angle);
   arrowHead.setAttribute('for', sourceLabel + '-' + destinationLabel);
   svg.arrowHeads.appendChild(arrowHead);
@@ -213,6 +222,7 @@ JSFlap.endTransition = function(e, transition) {
 
 JSFlap.cancelTransition = function(selector) {
   var svg = JSFlap.svgs[selector];
+  JSFlap.values['active-transition'].remove();
   document.querySelector('path[for="active-transition"]', svg.arrowHeads).remove();
 }
 
