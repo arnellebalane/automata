@@ -129,10 +129,10 @@ JSFlap.dragState = function(e, state) {
     var dy = parseInt(destination.getAttribute('cy'));
     if (source == destination) {
       var r = source.getAttribute('r');
-      s = { x: sx, y: sy - r};
-      d = { x: dx, y: dy - r};
-      c = { x1: -(r*4), y1: -(r*4), x2: (r*4), y2: -(r*4) };
-      transitions[i].setAttribute('d', JSFlap.generatePathDefinition(s, c , d));
+      s = { x: sx, y: sy - r };
+      d = { x: dx, y: dy - r };
+      c = { x1: -(r * 4), y1: -(r * 4), x2: (r * 4), y2: -(r * 4) };
+      transitions[i].setAttribute('d', JSFlap.generatePathDefinition(s, c, d));
     } else {
       transitions[i].setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
     }
@@ -191,10 +191,10 @@ JSFlap.endTransition = function(e, transition) {
   var dy = parseInt(destination.getAttribute('cy'));
   if (source == destination) {
     var r = source.getAttribute('r');
-    s = { x: sx, y: sy - r};
-    d = { x: dx, y: dy - r};
-    c = { x1: -(r*4), y1: -(r*4), x2: (r*4), y2: -(r*4) };
-    transition.setAttribute('d', JSFlap.generatePathDefinition(s, c , d));
+    s = { x: sx, y: sy - r };
+    d = { x: dx, y: dy - r };
+    c = { x1: -(r * 4), y1: -(r * 4), x2: (r * 4), y2: -(r * 4) };
+    transition.setAttribute('d', JSFlap.generatePathDefinition(s, c, d));
   } else {
     transition.setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
   }
@@ -228,6 +228,8 @@ JSFlap.generatePathDefinition = function(source, control, destination) {
     + (source.x + control.x2) + ',' + (source.y + control.y2) + ' ' 
     + destination.x + ',' + destination.y;
 }
+
+
 
 
 
