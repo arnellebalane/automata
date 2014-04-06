@@ -166,6 +166,16 @@ JSFlap.dragState = function(e, state) {
   state.setAttribute('cy', cy);
   $label.style.top = cy + 'px';
   $label.style.left = cx + 'px';
+  var indicator = document.querySelector('path.start-state-indicator[for="' + label + '"]', svg.canvas);
+  if (indicator) {
+    indicator.remove();
+    var cx = parseInt(state.getAttribute('cx')) - 12;
+    var cy = parseInt(state.getAttribute('cy'));
+    var e1 = Math.coordinates({ x: cx, y: cy }, 10, 180 - 45);
+    var e2 = Math.coordinates({ x: cx, y: cy }, 10, 180 + 45);
+    indicator = JSFlap.SVG.create('path', {  d: 'M' + e1.x + ',' + e1.y + ' L' + cx + ',' + cy + ' ' + e2.x + ',' + e2.y, class: 'start-state-indicator indicator', for: label });
+    svg.canvas.appendChild(indicator);
+  }
   var transitions = document.querySelectorAll('path[source="' + label + '"], path[destination="' + label + '"]', svg.transitions);
   for (var i = 0; i < transitions.length; i++) {
     var sourceLabel = transitions[i].getAttribute('source');
@@ -178,7 +188,7 @@ JSFlap.dragState = function(e, state) {
     var dy = parseInt(destination.getAttribute('cy'));
     var angle = null;
     var origin = null;
-    var label = document.querySelector('span[for="' + sourceLabel + '-' + destinationLabel + '"]', svg.labels);
+    label = document.querySelector('span[for="' + sourceLabel + '-' + destinationLabel + '"]', svg.labels);
     if (source == destination) {
       var r = source.getAttribute('r');
       var s = { x: sx, y: sy - r };
@@ -205,16 +215,6 @@ JSFlap.dragState = function(e, state) {
     if (document.querySelector('path[source="' + destinationLabel + '"][destination="' + sourceLabel + '"]') && sourceLabel != destinationLabel) {
       JSFlap.curveTransition(transitions[i]);
     }
-  }
-  var indicator = document.querySelector('path.start-state-indicator', svg.canvas);
-  if (indicator) {
-    indicator.remove();
-    var cx = parseInt(state.getAttribute('cx')) - 12;
-    var cy = parseInt(state.getAttribute('cy'));
-    var e1 = Math.coordinates({ x: cx, y: cy }, 10, 180 - 45);
-    var e2 = Math.coordinates({ x: cx, y: cy }, 10, 180 + 45);
-    indicator = JSFlap.SVG.create('path', {  d: 'M' + e1.x + ',' + e1.y + ' L' + cx + ',' + cy + ' ' + e2.x + ',' + e2.y, class: 'start-state-indicator indicator', for: label });
-    svg.canvas.appendChild(indicator);
   }
 }
 
