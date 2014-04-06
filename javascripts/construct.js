@@ -28,6 +28,7 @@ var construct = {
 
     construct.input.form.string.on('submit', function(e) {
       e.preventDefault();
+      construct.output.nfa = JSFlap.getNFA('#arena');
       var start = $('circle[label="q0"]');
       $('#mover').removeClass('hidden').css({ 'top': start.offset().top - 5 + 'px', 'left': start.offset().left - 5 + 'px' });
       $('#input').removeClass('accepted rejected');
