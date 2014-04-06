@@ -1,8 +1,4 @@
 function NFAConverter() {}
-NFAConverter.convert = function(nfa) {
-  nfa = NFAConverter.expandStringTransitions(nfa);
-  return nfa;
-}
 
 NFAConverter.expandStringTransitions = function(nfa) {
   for (var state in nfa.states) {
@@ -46,6 +42,7 @@ NFAConverter.eClosure = function(nfa, state, eStates) {
 }
 
 NFAConverter.convert = function(nfa) {
+  nfa = NFAConverter.expandStringTransitions(nfa);
   var dfa = new NFA(nfa.alphabet);
   var alphabet = nfa.alphabet.split('');
   var labelCtr = 1;
