@@ -206,6 +206,16 @@ JSFlap.dragState = function(e, state) {
       JSFlap.curveTransition(transitions[i]);
     }
   }
+  var indicator = document.querySelector('path.start-state-indicator', svg.canvas);
+  if (indicator) {
+    indicator.remove();
+    var cx = parseInt(state.getAttribute('cx')) - 12;
+    var cy = parseInt(state.getAttribute('cy'));
+    var e1 = Math.coordinates({ x: cx, y: cy }, 10, 180 - 45);
+    var e2 = Math.coordinates({ x: cx, y: cy }, 10, 180 + 45);
+    indicator = JSFlap.SVG.create('path', {  d: 'M' + e1.x + ',' + e1.y + ' L' + cx + ',' + cy + ' ' + e2.x + ',' + e2.y, class: 'start-state-indicator indicator', for: label });
+    svg.canvas.appendChild(indicator);
+  }
 }
 
 JSFlap.startTransition = function(e) {
@@ -430,7 +440,7 @@ JSFlap.setStartState = function(state) {
   if (indicator) {
     indicator.remove();
   }
-  indicator = JSFlap.SVG.create('path', { class: 'start-state-indicator indicator' });
+  indicator = JSFlap.SVG.create('path', { class: 'start-state-indicator indicator', for: label });
   indicator.setAttribute('d', 'M' + e1.x + ',' + e1.y + ' L' + cx + ',' + cy + ' ' + e2.x + ',' + e2.y);
   svg.canvas.appendChild(indicator);
 }
