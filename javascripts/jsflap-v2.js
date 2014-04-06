@@ -2,6 +2,7 @@ function JSFlap() {}
 JSFlap.svgs = {};
 JSFlap.nfas = {};
 JSFlap.values = {};
+JSFlap.prompts = {};
 
 JSFlap.transform = function(selector) {
   var container = document.querySelector(selector);
@@ -12,12 +13,15 @@ JSFlap.transform = function(selector) {
   var transitions = JSFlap.SVG.create('g', { class: 'transitions' });
   var arrowHeads = JSFlap.SVG.create('g', { class: 'arrow-heads' });
   var labels = document.createElement('div');
+  var prompt = document.createElement('div');
   labels.setAttribute('class', 'labels');
   labels.setAttribute('for', selector);
   labels.style.top = 0;
   labels.style.left = 0;
   labels.style.right = 0;
   labels.style.bottom = 0;
+  prompt.innerHTML = JSFlap.templates.promptSymbol;
+  prompt = prompt.firstChild;
   container.appendChild(svg);
   svg.appendChild(transitions);
   svg.appendChild(arrowHeads);
@@ -25,28 +29,35 @@ JSFlap.transform = function(selector) {
   var position = getComputedStyle(container)['position'];
   container.style.position = (position == 'relative' || position == 'absolute') ? position : 'relative';
   container.appendChild(labels);
+  container.appendChild(prompt);
 
   JSFlap.svgs[selector] = { canvas: svg, states: states, transitions: transitions, arrowHeads: arrowHeads, labels: labels };
   JSFlap.nfas[selector] = new NFA('ab');
   JSFlap.nfas[selector].states = {};
   JSFlap.nfas[selector].statesCount = 0;
   JSFlap.nfas[selector].startState = null;
+  JSFlap.prompts[selector] = prompt;
 
-  container.addEventListener('mousedown', function(e) {
-    if (e.target.nodeName == 'circle') {
-      if (e.shiftKey) {
-        JSFlap.values['active-transition'] = JSFlap.startTransition(e);
-      } else if (e.altKey) { 
-        JSFlap.values['delete-state'] = e.target;
-      } else {
-        JSFlap.values['active-state'] = e.target;
-      }
+  svg.addEventListener('mousedown', function(e) {
+    if ('prompted-transition' in JSFlap.values) {
+      JSFlap.removeTransition(JSFlap.values['prompted-transition']);
+      delete JSFlap.values['prompted-transition'];
     } else {
-      JSFlap.values['active-state'] = JSFlap.addState(e, selector)
+      if (e.target.nodeName == 'circle') {
+        if (e.shiftKey) {
+          JSFlap.values['active-transition'] = JSFlap.startTransition(e);
+        } else if (e.altKey) { 
+          JSFlap.values['delete-state'] = e.target;
+        } else {
+          JSFlap.values['active-state'] = e.target;
+        }
+      } else {
+        JSFlap.values['active-state'] = JSFlap.addState(e, selector)
+      }
     }
   });
 
-  container.addEventListener('mousemove', function(e) {
+  svg.addEventListener('mousemove', function(e) {
     if ('active-state' in JSFlap.values) {
       JSFlap.dragState(e, JSFlap.values['active-state']);
     }
@@ -56,7 +67,7 @@ JSFlap.transform = function(selector) {
     }
   });
 
-  container.addEventListener('mouseup', function(e) {
+  svg.addEventListener('mouseup', function(e) {
     delete JSFlap.values['active-state'];
     if ('active-transition' in JSFlap.values) {
       if (e.target.nodeName == 'circle') {
@@ -72,6 +83,20 @@ JSFlap.transform = function(selector) {
         JSFlap.removeState(e, selector);
       }
       delete JSFlap.values['delete-state'];
+    }
+  });
+
+  prompt.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var symbol = prompt.symbol.value.trim();
+    JSFlap.activateTransition(JSFlap.values['prompted-transition'], symbol);
+    delete JSFlap.values['prompted-transition'];
+  });
+
+  prompt.symbol.addEventListener('blur', function() {
+    if ('prompted-transition' in JSFlap.values) {
+      JSFlap.removeTransition(JSFlap.values['prompted-transition']);
+      delete JSFlap.values['prompted-transition'];
     }
   });
 }
@@ -206,9 +231,7 @@ JSFlap.endTransition = function(e, transition) {
   var dy = parseInt(destination.getAttribute('cy'));
   var angle = null;
   var origin = null;
-  var transitionSymbol = 'a';
-  var label = document.createElement('span');
-  label.textContent = transitionSymbol;
+  var prompt = JSFlap.prompts[container];
   if (source == destination) {
     var r = source.getAttribute('r');
     var s = { x: sx, y: sy - r };
@@ -216,27 +239,24 @@ JSFlap.endTransition = function(e, transition) {
     var c = { x1: -(r * 4), y1: -(r * 4), x2: (r * 4), y2: -(r * 4) };
     transition.setAttribute('d', JSFlap.generatePathDefinition(s, c, d));
     var control = { x: s.x - 45, y: s.y -55 };
-    var angle = Math.angle(d, control);
-    var origin = Math.coordinates(d, 1, angle);
-    label.style.top = s.y - r * 3.5 + 'px';
-    label.style.left = s.x + 'px';
+    angle = Math.angle(d, control);
+    origin = Math.coordinates(d, 1, angle);
+    prompt.style.top = s.y - 50 + 'px';
+    prompt.style.left = s.x + 5 + 'px';
   } else {
     transition.setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
-    var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
-    var origin = Math.coordinates({ x: dx, y: dy }, 12, angle);
+    angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
+    origin = Math.coordinates({ x: dx, y: dy }, 12, angle);
     var distance = Math.distance({ x: sx, y: sy }, { x: dx, y: dy });
     var middle = Math.coordinates({ x: dx, y: dy }, distance / 2, angle);
-    var coordinates = Math.coordinates(middle, 7, angle + 90);
-    label.style.top = coordinates.y + 'px';
-    label.style.left = coordinates.x + 'px';
+    prompt.style.top = middle.y - 15 + 'px';
+    prompt.style.left = middle.x + 5 + 'px';
   }
+  prompt.classList.remove('hidden');
+  prompt.symbol.focus();
+  JSFlap.values['prompted-transition'] = transition;
   transition.setAttribute('destination', destinationLabel);
   transition.setAttribute('label', sourceLabel + '-' + destinationLabel);
-  var sourceState = JSFlap.nfas[container].getState(sourceLabel);
-  var destinationState = JSFlap.nfas[container].getState(destinationLabel);
-  sourceState.transition(destinationState, transitionSymbol);
-  label.setAttribute('for', transition.getAttribute('label'));
-  svg.labels.appendChild(label);
   document.querySelector('path[for="active-transition"]', svg.arrowHeads).remove();
   var arrowHead = JSFlap.getArrowHead(origin, angle);
   arrowHead.setAttribute('for', sourceLabel + '-' + destinationLabel);
@@ -248,10 +268,58 @@ JSFlap.endTransition = function(e, transition) {
   }
 }
 
+JSFlap.activateTransition = function(transition, symbol) {
+  var container = transition.getAttribute('container');
+  var svg = JSFlap.svgs[container];
+  var nfa = JSFlap.nfas[container];
+  var sourceLabel = transition.getAttribute('source');
+  var destinationLabel = transition.getAttribute('destination');
+  var source = document.querySelector('circle[label="' + sourceLabel + '"]', svg.states);
+  var destination = document.querySelector('circle[label="' + destinationLabel + '"]', svg.states);
+  var sourceState = nfa.getState(sourceLabel);
+  var destinationState = nfa.getState(destinationLabel);
+  symbol = (symbol || '~').split(',');
+  for (var i = 0; i < symbol.length; i++) {
+    sourceState.transition(destinationState, symbol[i].trim());
+  }
+  symbol = symbol.join(',');
+  var sx = parseInt(source.getAttribute('cx'));
+  var sy = parseInt(source.getAttribute('cy'));
+  var dx = parseInt(destination.getAttribute('cx'));
+  var dy = parseInt(destination.getAttribute('cy'));
+  var label = document.createElement('span');
+  label.textContent = symbol;
+  if (sourceLabel == destinationLabel) {
+    var r = parseInt(source.getAttribute('r'));
+    label.style.top = sy - r * 4.5 + 'px';
+    label.style.left = sx + 'px';
+  } else {
+    var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
+    var distance = Math.distance({ x: sx, y: sy }, { x: dx, y: dy });
+    var middle = Math.coordinates({ x: dx, y: dy }, distance / 2, angle);
+    var coordinates = Math.coordinates(middle, 7, angle + 90);
+    label.style.top = coordinates.y + 'px';
+    label.style.left = coordinates.x + 'px';
+  }
+  label.setAttribute('for', transition.getAttribute('label'));
+  svg.labels.appendChild(label);
+  JSFlap.prompts[container].symbol.value = '';
+  JSFlap.prompts[container].classList.add('hidden');
+}
+
 JSFlap.cancelTransition = function(selector) {
   var svg = JSFlap.svgs[selector];
   JSFlap.values['active-transition'].remove();
   document.querySelector('path[for="active-transition"]', svg.arrowHeads).remove();
+}
+
+JSFlap.removeTransition = function(transition) {
+  var container = transition.getAttribute('container');
+  var svg = JSFlap.svgs[container];
+  var label = transition.getAttribute('label');
+  document.querySelector('path[for="' + label + '"]', svg.arrowHeads).remove();
+  transition.remove();
+  JSFlap.prompts[container].classList.add('hidden');
 }
 
 JSFlap.getArrowHead = function(origin, angle) {
@@ -315,3 +383,12 @@ JSFlap.SVG.create = function(type, attributes) {
   }
   return element;
 }
+
+
+
+
+
+JSFlap.templates = function() {}
+JSFlap.templates.promptSymbol = '<form action="#" method="POST" id="prompt-transition-symbol" class="hidden"> \
+                                    <input type="text" name="symbol"> \
+                                  </form>';

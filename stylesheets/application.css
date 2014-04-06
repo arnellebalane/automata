@@ -256,3 +256,33 @@ form.invalid input[type="submit"] {
   right: 0;
   bottom: 0;
 }
+
+#prompt-transition-symbol {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  z-index: 15;
+  width: 50px;
+  margin: 0;
+  padding: 0;
+  background-color: #00406A;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+#prompt-transition-symbol:before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 9px;
+  border-right: 6px solid #00406A;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+
+#prompt-transition-symbol input[type="text"] {
+  width: 100%;
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 5px;
+}
