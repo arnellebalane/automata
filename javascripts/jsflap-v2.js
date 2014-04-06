@@ -144,6 +144,9 @@ JSFlap.dragState = function(e, state) {
     }
     var arrowHead = JSFlap.getArrowHead(origin, angle);
     document.querySelector('path[for="' + sourceLabel + '-' + destinationLabel + '"]').setAttribute('d', arrowHead.getAttribute('d'));
+    if (document.querySelector('path[source="' + destinationLabel + '"][destination="' + sourceLabel + '"]') && sourceLabel != destinationLabel) {
+      JSFlap.curveTransition(transitions[i]);
+    }
   }
 }
 
@@ -218,6 +221,11 @@ JSFlap.endTransition = function(e, transition) {
   var arrowHead = JSFlap.getArrowHead(origin, angle);
   arrowHead.setAttribute('for', sourceLabel + '-' + destinationLabel);
   svg.arrowHeads.appendChild(arrowHead);
+  var reverse = document.querySelector('path[source="' + destinationLabel + '"][destination="' + sourceLabel + '"]');
+  if (reverse && sourceLabel != destinationLabel) {
+    JSFlap.curveTransition(transition);
+    JSFlap.curveTransition(reverse);
+  }
 }
 
 JSFlap.cancelTransition = function(selector) {
@@ -237,6 +245,35 @@ JSFlap.generatePathDefinition = function(source, control, destination) {
     + ' C' + (source.x + control.x1) + ',' + (source.y + control.y1) + ' ' 
     + (source.x + control.x2) + ',' + (source.y + control.y2) + ' ' 
     + destination.x + ',' + destination.y;
+}
+
+JSFlap.curveTransition = function(transition) {
+  var container = transition.getAttribute('container');
+  var svg = JSFlap.svgs[container];
+  var sourceLabel = transition.getAttribute('source');
+  var destinationLabel = transition.getAttribute('destination');
+  var source = document.querySelector('circle[label="' + sourceLabel + '"]', svg.states);
+  var destination = document.querySelector('circle[label="' + destinationLabel + '"]', svg.states);
+  var s = { x: parseInt(source.getAttribute('cx')), y: parseInt(source.getAttribute('cy')) };
+  var d = { x: parseInt(destination.getAttribute('cx')), y: parseInt(destination.getAttribute('cy')) };
+  var distance = Math.distance(s, d);
+  var angle = Math.angle(s, d);
+  var origin1 = Math.coordinates(s, distance * 0.25, angle);
+  var origin2 = Math.coordinates(s, distance * 0.75, angle);
+  var control1 = Math.coordinates(origin1, distance * 0.2, angle + 90);
+  var control2 = Math.coordinates(origin2, distance * 0.2, angle + 90);
+  var control = { x1: control1.x - s.x, y1: control1.y - s.y, x2: control2.x - s.x, y2: control2.y - s.y };
+  var path = JSFlap.generatePathDefinition(s, control, d);
+  transition.setAttribute('d', path);
+  angle = Math.angle(d, control2);
+  if (distance < 50) {
+    angle += 15;
+  } else if (distance < 200) {
+    angle += 10;
+  }
+  var origin = Math.coordinates(d, 12, angle);
+  var arrowHead = JSFlap.getArrowHead(origin, angle);
+  document.querySelector('path[for="' + sourceLabel + '-' + destinationLabel + '"]', svg.arrowHeads).setAttribute('d', arrowHead.getAttribute('d'));
 }
 
 
