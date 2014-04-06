@@ -145,6 +145,7 @@ JSFlap.removeState = function(e, selector) {
   $('path[source="' + labelToRemove + '"]').remove();
   $('path[destination="' + labelToRemove + '"]').remove();
   $('path[for*="' + labelToRemove + '"]').remove();
+  $('span[for*="' + labelToRemove + '"]').remove();
 }
 
 JSFlap.dragState = function(e, state) {
