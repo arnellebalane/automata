@@ -305,6 +305,11 @@ JSFlap.activateTransition = function(transition, symbol) {
   svg.labels.appendChild(label);
   JSFlap.prompts[container].symbol.value = '';
   JSFlap.prompts[container].classList.add('hidden');
+  var reverse = document.querySelector('path[source="' + destinationLabel + '"][destination="' + sourceLabel + '"]');
+  if (reverse && sourceLabel != destinationLabel) {
+    JSFlap.curveTransition(transition);
+    JSFlap.curveTransition(reverse);
+  }
 }
 
 JSFlap.cancelTransition = function(selector) {
@@ -320,19 +325,6 @@ JSFlap.removeTransition = function(transition) {
   document.querySelector('path[for="' + label + '"]', svg.arrowHeads).remove();
   transition.remove();
   JSFlap.prompts[container].classList.add('hidden');
-}
-
-JSFlap.getArrowHead = function(origin, angle) {
-  var e1 = Math.coordinates(origin, 6, angle + 25);
-  var e2 = Math.coordinates(origin, 6, angle - 25);
-  return JSFlap.SVG.create('path', { d: 'M' + e1.x + ',' + e1.y + ' L' + origin.x + ',' + origin.y + ' ' + e2.x + ',' + e2.y });
-}
-
-JSFlap.generatePathDefinition = function(source, control, destination) {
-  return 'M' +  source.x + ',' + source.y 
-    + ' C' + (source.x + control.x1) + ',' + (source.y + control.y1) + ' ' 
-    + (source.x + control.x2) + ',' + (source.y + control.y2) + ' ' 
-    + destination.x + ',' + destination.y;
 }
 
 JSFlap.curveTransition = function(transition) {
@@ -357,8 +349,14 @@ JSFlap.curveTransition = function(transition) {
   var label = document.querySelector('span[for="' + sourceLabel + '-' + destinationLabel + '"]', svg.labels);
   var middle = Math.coordinates(d, distance / 2, angle);
   var coordinates = Math.coordinates(middle, distance * 0.2 - 7, angle + 90);
-  label.style.top = coordinates.y + 'px';
-  label.style.left = coordinates.x + 'px';
+  if (label) {
+    label.style.top = coordinates.y + 'px';
+    label.style.left = coordinates.x + 'px';
+  } else {
+    var prompt = JSFlap.prompts[container];
+    prompt.style.top = coordinates.y - 20 + 'px';
+    prompt.style.left = coordinates.x + 3 + 'px';
+  }
   if (distance < 50) {
     angle += 15;
   } else if (distance < 200) {
@@ -367,6 +365,19 @@ JSFlap.curveTransition = function(transition) {
   var origin = Math.coordinates(d, 12, angle);
   var arrowHead = JSFlap.getArrowHead(origin, angle);
   document.querySelector('path[for="' + sourceLabel + '-' + destinationLabel + '"]', svg.arrowHeads).setAttribute('d', arrowHead.getAttribute('d'));
+}
+
+JSFlap.getArrowHead = function(origin, angle) {
+  var e1 = Math.coordinates(origin, 6, angle + 25);
+  var e2 = Math.coordinates(origin, 6, angle - 25);
+  return JSFlap.SVG.create('path', { d: 'M' + e1.x + ',' + e1.y + ' L' + origin.x + ',' + origin.y + ' ' + e2.x + ',' + e2.y });
+}
+
+JSFlap.generatePathDefinition = function(source, control, destination) {
+  return 'M' +  source.x + ',' + source.y 
+    + ' C' + (source.x + control.x1) + ',' + (source.y + control.y1) + ' ' 
+    + (source.x + control.x2) + ',' + (source.y + control.y2) + ' ' 
+    + destination.x + ',' + destination.y;
 }
 
 
