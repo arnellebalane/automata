@@ -146,13 +146,18 @@ JSFlap.removeState = function(e, selector) {
   var svg = JSFlap.svgs[selector];
   var nfa = JSFlap.nfas[selector];
   var labelToRemove = $(e.target).attr('label');
-  var state = nfa.removeState( labelToRemove );
-  $('circle[label="' + labelToRemove + '"]').remove();
-  $('p[label="' + labelToRemove + '"]').remove();
-  $('path[source="' + labelToRemove + '"]').remove();
-  $('path[destination="' + labelToRemove + '"]').remove();
-  $('path[for*="' + labelToRemove + '"]').remove();
-  $('span[for*="' + labelToRemove + '"]').remove();
+  var state = nfa.removeState(labelToRemove);
+  $('.states circle[label="' + labelToRemove + '"]').remove();
+  $('.labels p[label="' + labelToRemove + '"]').remove();
+  $('.transitions path[source="' + labelToRemove + '"]').remove();
+  $('.transitions path[destination="' + labelToRemove + '"]').remove();
+  $('.arrow-heads path[for*="' + labelToRemove + '"]').remove();
+  $('.labels span[for*="' + labelToRemove + '"]').remove();
+  var indicator = document.querySelector('path.start-state-indicator[for="' + labelToRemove + '"]', svg.canvas);
+  if (indicator) {
+    nfa.setStartState(null);
+    indicator.remove();
+  }
 }
 
 JSFlap.dragState = function(e, state) {
