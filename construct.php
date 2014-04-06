@@ -16,7 +16,7 @@
 
 <body>  
   <main class="construct">
-    <a href="index.html" id="logo">automata</a>
+    <a href="index.php" id="logo">automata</a>
     <div id="container"></div>
     <div id="arena"></div>
     <div id="indicators" class="hidden">

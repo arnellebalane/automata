@@ -12,8 +12,8 @@
     <h1>automata</h1>
     <h2>what do you want to do?</h2>
 
-    <a href="parse.html">Parse Regular Expression</a>
-    <a href="construct.html">Construct an Automaton</a>
+    <a href="parse.php">Parse Regular Expression</a>
+    <a href="construct.php">Construct an Automaton</a>
   </main>
 </body>
 </html>
