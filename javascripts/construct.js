@@ -16,7 +16,7 @@ var construct = {
     $('.button[data-action="convert-to-dfa"]').on('click', function() {
       var nfa = JSFlap.getNFA('#arena');
       var dfa = NFAConverter.convert(nfa);
-      $('#arena').addClass('hidden');
+      $('#arena').empty();
       $('#container').empty();
       $('.labels[for="#container"]').remove();
       NFAVisualizer.visualize('#container', dfa);
