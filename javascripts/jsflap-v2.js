@@ -37,7 +37,7 @@ JSFlap.transform = function(selector) {
   container.appendChild(menu);
 
   JSFlap.svgs[selector] = { canvas: svg, states: states, transitions: transitions, arrowHeads: arrowHeads, labels: labels };
-  JSFlap.nfas[selector] = new NFA('ab');
+  JSFlap.nfas[selector] = new NFA('');
   JSFlap.nfas[selector].states = {};
   JSFlap.nfas[selector].statesCount = 0;
   JSFlap.nfas[selector].startState = null;
@@ -327,6 +327,11 @@ JSFlap.activateTransition = function(transition, symbol) {
   var destinationState = nfa.getState(destinationLabel);
   symbol = (symbol || '~').split(',');
   for (var i = 0; i < symbol.length; i++) {
+    for (var j = 0; j < symbol[i].length; j++) {
+      if (!nfa.alphabetContains(symbol[i][j]) && symbol[i][j] != '~') {
+        nfa.alphabet += symbol[i][j];
+      }
+    }
     sourceState.transition(destinationState, symbol[i].trim());
   }
   symbol = symbol.join(',');
