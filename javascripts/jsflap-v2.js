@@ -123,6 +123,13 @@ JSFlap.transform = function(selector) {
     JSFlap.menus[selector].classList.add('hidden');
     delete JSFlap.values['contextmenu-state'];
   });
+
+  document.querySelector('a[data-action="final-state"]', menu).addEventListener('click', function(e) {
+    e.preventDefault();
+    JSFlap.toggleFinalState(JSFlap.values['contextmenu-state']);
+    JSFlap.menus[selector].classList.add('hidden');
+    delete JSFlap.values['contextmenu-state'];
+  });
 }
 
 JSFlap.addState = function(e, selector) {
@@ -448,6 +455,20 @@ JSFlap.setStartState = function(state) {
   indicator = JSFlap.SVG.create('path', { class: 'start-state-indicator indicator', for: label });
   indicator.setAttribute('d', 'M' + e1.x + ',' + e1.y + ' L' + cx + ',' + cy + ' ' + e2.x + ',' + e2.y);
   svg.canvas.appendChild(indicator);
+}
+
+JSFlap.toggleFinalState = function(state) {
+  var container = state.getAttribute('container');
+  var nfa = JSFlap.nfas[container];
+  var label = state.getAttribute('label');
+  var _state = nfa.getState(label);
+  if (_state.final) {
+    _state.unfinalize();
+    state.classList.remove('final');
+  } else {
+    _state.finalize();
+    state.classList.add('final');
+  }
 }
 
 
