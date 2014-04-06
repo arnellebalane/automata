@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="stylesheets/reset.css">
+  <link rel="stylesheet" href="stylesheets/fonts.css">
   <link rel="stylesheet" href="stylesheets/application.css">
   <link rel="stylesheet" href="stylesheets/visualizer.css">
   <script src="javascripts/jquery.js"></script>

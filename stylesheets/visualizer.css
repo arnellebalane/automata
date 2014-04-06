@@ -5,7 +5,7 @@
 
 .labels p,
 .labels span {
-  font: normal 10px "Consolas";
+  font: normal 10px "Consolas", "ConsolasRegular";
   color: #00406A;
   position: absolute;
   -webkit-transform: translate(-55%, -55%);

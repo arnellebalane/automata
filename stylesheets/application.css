@@ -22,14 +22,14 @@ body {
 }
 
 h1 {
-  font: normal 8rem/1 "Chelsea Market";
+  font: normal 8rem/1 "Chelsea Market", "ChelseaMarket";
   color: #00406A;
   text-align: center;
   padding-top: 130px;
 }
 
 h2 {
-  font: normal 3rem/1 "Open Sans Light";
+  font: normal 3rem/1 "Open Sans Light", "OpenSansLight";
   color: #00406A;
   text-align: center;
   padding-bottom: 50px;
@@ -39,7 +39,7 @@ a {
   display: block;
   width: 400px;
   margin: 15px auto 0 auto;
-  font: normal 2rem/1 "Open Sans Light";
+  font: normal 2rem/1 "Open Sans Light", "OpenSansLight";
   color: #00406A;
   text-align: center;
   text-decoration: none;
@@ -66,7 +66,7 @@ a:active {
 
 .button {
   vertical-align: top;
-  font: normal 1.4rem/1 "Open Sans Light";
+  font: normal 1.4rem/1 "Open Sans Light", "OpenSansLight";
   color: #00406A;
   text-transform: uppercase;
   background-color: transparent;
@@ -97,7 +97,7 @@ a:active {
   left: 15px;
   z-index: 12;
   width: auto;
-  font: normal 3rem/1 "Chelsea Market";
+  font: normal 3rem/1 "Chelsea Market", "ChelseaMarket";
   color: #00406A;
   text-transform: none;
   outline: none;
@@ -131,14 +131,14 @@ form {
 
 form label {
   display: inline-block;
-  font: normal 1.4rem/1 "Open Sans Light";
+  font: normal 1.4rem/1 "Open Sans Light", "OpenSansLight";
   color: #00406A;
   text-transform: uppercase;
   margin-right: 5px;
 }
 
 form input[type="text"] {
-  font: normal 1.6rem "Consolas";
+  font: normal 1.6rem "Consolas", "ConsolasRegular";
   color: #333333;
   padding: 7px 7px 6px 7px;
   background-color: #BEE5EF;
@@ -234,7 +234,7 @@ form.invalid input[type="submit"] {
   position: absolute;
   top: 100px;
   right: 30px;
-  font: bold 2rem/1 "Chelsea Market";
+  font: bold 2rem/1 "Chelsea Market", "ChelseaMarket";
   color: #00406A;
 }
 
@@ -315,7 +315,7 @@ form.invalid input[type="submit"] {
 #context-menu a {
   display: block;
   width: 100%;
-  font: normal 1rem/1 "Open Sans Light";
+  font: normal 1rem/1 "Open Sans Light", "OpenSansLight";
   color: #ffffff;
   text-align: center;
   text-decoration: none;
