@@ -128,19 +128,27 @@ JSFlap.dragState = function(e, state) {
     var dy = parseInt(destination.getAttribute('cy'));
     var angle = null;
     var origin = null;
+    var label = document.querySelector('span[for="' + sourceLabel + '-' + destinationLabel + '"]', svg.labels);
     if (source == destination) {
       var r = source.getAttribute('r');
-      s = { x: sx, y: sy - r };
-      d = { x: dx, y: dy - r };
-      c = { x1: -(r * 4), y1: -(r * 4), x2: (r * 4), y2: -(r * 4) };
+      var s = { x: sx, y: sy - r };
+      var d = { x: dx, y: dy - r };
+      var c = { x1: -(r * 4), y1: -(r * 4), x2: (r * 4), y2: -(r * 4) };
       transitions[i].setAttribute('d', JSFlap.generatePathDefinition(s, c, d));
       var control = { x: s.x - 45, y: s.y -55 };
       var angle = Math.angle(d, control);
       var origin = Math.coordinates(d, 1, angle);
+      label.style.top = s.y - r * 3.5 + 'px';
+      label.style.left = s.x + 'px';
     } else {
       transitions[i].setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
       var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
       var origin = Math.coordinates({ x: dx, y: dy }, 12, angle);
+      var distance = Math.distance({ x: sx, y: sy }, { x: dx, y: dy });
+      var middle = Math.coordinates({ x: dx, y: dy }, distance / 2, angle);
+      var coordinates = Math.coordinates(middle, 7, angle + 90);
+      label.style.top = coordinates.y + 'px';
+      label.style.left = coordinates.x + 'px';
     }
     var arrowHead = JSFlap.getArrowHead(origin, angle);
     document.querySelector('path[for="' + sourceLabel + '-' + destinationLabel + '"]').setAttribute('d', arrowHead.getAttribute('d'));
@@ -198,25 +206,37 @@ JSFlap.endTransition = function(e, transition) {
   var dy = parseInt(destination.getAttribute('cy'));
   var angle = null;
   var origin = null;
+  var transitionSymbol = 'a';
+  var label = document.createElement('span');
+  label.textContent = transitionSymbol;
   if (source == destination) {
     var r = source.getAttribute('r');
-    s = { x: sx, y: sy - r };
-    d = { x: dx, y: dy - r };
-    c = { x1: -(r * 4), y1: -(r * 4), x2: (r * 4), y2: -(r * 4) };
+    var s = { x: sx, y: sy - r };
+    var d = { x: dx, y: dy - r };
+    var c = { x1: -(r * 4), y1: -(r * 4), x2: (r * 4), y2: -(r * 4) };
     transition.setAttribute('d', JSFlap.generatePathDefinition(s, c, d));
     var control = { x: s.x - 45, y: s.y -55 };
     var angle = Math.angle(d, control);
     var origin = Math.coordinates(d, 1, angle);
+    label.style.top = s.y - r * 3.5 + 'px';
+    label.style.left = s.x + 'px';
   } else {
     transition.setAttribute('d', 'M' + sx + ',' + sy + ' L' + dx + ',' + dy);
     var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
     var origin = Math.coordinates({ x: dx, y: dy }, 12, angle);
+    var distance = Math.distance({ x: sx, y: sy }, { x: dx, y: dy });
+    var middle = Math.coordinates({ x: dx, y: dy }, distance / 2, angle);
+    var coordinates = Math.coordinates(middle, 7, angle + 90);
+    label.style.top = coordinates.y + 'px';
+    label.style.left = coordinates.x + 'px';
   }
   transition.setAttribute('destination', destinationLabel);
   transition.setAttribute('label', sourceLabel + '-' + destinationLabel);
   var sourceState = JSFlap.nfas[container].getState(sourceLabel);
   var destinationState = JSFlap.nfas[container].getState(destinationLabel);
-  sourceState.transition(destinationState, 'a');
+  sourceState.transition(destinationState, transitionSymbol);
+  label.setAttribute('for', transition.getAttribute('label'));
+  svg.labels.appendChild(label);
   document.querySelector('path[for="active-transition"]', svg.arrowHeads).remove();
   var arrowHead = JSFlap.getArrowHead(origin, angle);
   arrowHead.setAttribute('for', sourceLabel + '-' + destinationLabel);
@@ -266,6 +286,11 @@ JSFlap.curveTransition = function(transition) {
   var path = JSFlap.generatePathDefinition(s, control, d);
   transition.setAttribute('d', path);
   angle = Math.angle(d, control2);
+  var label = document.querySelector('span[for="' + sourceLabel + '-' + destinationLabel + '"]', svg.labels);
+  var middle = Math.coordinates(d, distance / 2, angle);
+  var coordinates = Math.coordinates(middle, distance * 0.2 - 7, angle + 90);
+  label.style.top = coordinates.y + 'px';
+  label.style.left = coordinates.x + 'px';
   if (distance < 50) {
     angle += 15;
   } else if (distance < 200) {
