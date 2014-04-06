@@ -330,6 +330,7 @@ JSFlap.activateTransition = function(transition, symbol) {
     sourceState.transition(destinationState, symbol[i].trim());
   }
   symbol = symbol.join(',');
+  transition.setAttribute('symbol', symbol);
   var sx = parseInt(source.getAttribute('cx'));
   var sy = parseInt(source.getAttribute('cy'));
   var dx = parseInt(destination.getAttribute('cx'));
@@ -469,6 +470,10 @@ JSFlap.toggleFinalState = function(state) {
     _state.finalize();
     state.classList.add('final');
   }
+}
+
+JSFlap.getNFA = function(selector) {
+  return JSFlap.nfas[selector];
 }
 
 

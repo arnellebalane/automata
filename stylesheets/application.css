@@ -249,6 +249,10 @@ form.invalid input[type="submit"] {
 
 
 /** CONSTRUCT PAGE **/
+.construct #string-input input[type="text"] {
+  width: 189px;
+}
+
 #arena {
   position: absolute;
   top: 0;
