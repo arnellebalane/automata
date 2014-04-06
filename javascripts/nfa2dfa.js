@@ -56,7 +56,7 @@ NFAConverter.convert = function(nfa) {
   var qZeroEClosures = NFAConverter.eClosure(nfa, nfa.states['q0'], []).sort();
   var deadState = {  
     label: "deadState", 
-    transitions : {a : "deadState", b : "deadState"}, 
+    transitions: {},
     containedStates:[]
   }
   var hasDeadState = false; 
@@ -123,6 +123,9 @@ NFAConverter.convert = function(nfa) {
 
     finalDFAstates = setFinalStates(finalDFAstates, finalNFAstates);
     if (hasDeadState) {
+      for (var i = 0; i < alphabet.length; i++) {
+        deadState.transitions[alphabet[i]] = "deadState"
+      }
       finalDFAstates.push(deadState);
     }
 
