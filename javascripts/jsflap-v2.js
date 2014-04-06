@@ -116,6 +116,13 @@ JSFlap.transform = function(selector) {
       delete JSFlap.values['prompted-transition'];
     }
   });
+
+  document.querySelector('a[data-action="start-state"]', menu).addEventListener('click', function(e) {
+    e.preventDefault();
+    JSFlap.setStartState(JSFlap.values['contextmenu-state']);
+    JSFlap.menus[selector].classList.add('hidden');
+    delete JSFlap.values['contextmenu-state'];
+  });
 }
 
 JSFlap.addState = function(e, selector) {
@@ -406,6 +413,26 @@ JSFlap.showContextMenu = function(state) {
   menu.style.top = cy + 17 + 'px';
   menu.style.left = cx + 'px';
   menu.classList.remove('hidden');
+}
+
+JSFlap.setStartState = function(state) {
+  var container = state.getAttribute('container');
+  var svg = JSFlap.svgs[container];
+  var nfa = JSFlap.nfas[container];
+  var label = state.getAttribute('label');
+  var _state = nfa.getState(label);
+  nfa.setStartState(_state);
+  var cx = parseInt(state.getAttribute('cx')) - 12;
+  var cy = parseInt(state.getAttribute('cy'));
+  var e1 = Math.coordinates({ x: cx, y: cy }, 10, 180 - 45);
+  var e2 = Math.coordinates({ x: cx, y: cy }, 10, 180 + 45);
+  var indicator = document.querySelector('path.start-state-indicator', svg.canvas);
+  if (indicator) {
+    indicator.remove();
+  }
+  indicator = JSFlap.SVG.create('path', { class: 'start-state-indicator indicator' });
+  indicator.setAttribute('d', 'M' + e1.x + ',' + e1.y + ' L' + cx + ',' + cy + ' ' + e2.x + ',' + e2.y);
+  svg.canvas.appendChild(indicator);
 }
 
 
