@@ -506,6 +506,8 @@ JSFlap.templates.promptSymbol = '<form action="#" method="POST" id="prompt-trans
                                   </form>';
 
 JSFlap.templates.contextMenu = '<ul id="context-menu" class="hidden"> \
+                                  <li><a href="#" data-action="transition">Transition</a></li> \
                                   <li><a href="#" data-action="start-state">Start State</a></li> \
                                   <li><a href="#" data-action="final-state">Final State</a></li> \
+                                  <li><a href="#" data-action="delete-state">Delete State</a></li> \
                                 </ul>';

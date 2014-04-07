@@ -296,7 +296,7 @@ form.invalid input[type="submit"] {
   top: 100px;
   left: 100px;
   z-index: 15;
-  width: 80px;
+  width: 86px;
   background-color: #00406A;
   -webkit-transform: translateX(-50%);
 }
@@ -321,15 +321,16 @@ form.invalid input[type="submit"] {
   text-decoration: none;
   text-transform: uppercase;
   border: none;
+  border-bottom: 1px solid #ffffff;
   border-radius: 0;
-  padding: 8px 0;
-  margin: 0;
+  padding: 5px 0;
+  margin: 0 0 -1px 0;
   box-shadow: none;
 }
 
-#context-menu li:first-of-type a {
-  border-bottom: 1px solid #ffffff;
-  margin-bottom: -1px;
+#context-menu li:last-of-type a {
+  border-bottom: none;
+  margin: 0;
 }
 
 #context-menu a:hover, 
