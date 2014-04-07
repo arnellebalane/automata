@@ -54,7 +54,7 @@ JSFlap.transform = function(selector) {
     } else {
       if (e.target.nodeName == 'circle') {
         if (e.shiftKey) {
-          JSFlap.values['active-transition'] = JSFlap.startTransition(e);
+          JSFlap.values['active-transition'] = JSFlap.startTransition(e.target);
         } else if (e.altKey) { 
           JSFlap.values['delete-state'] = e.target;
         } else {
@@ -115,6 +115,13 @@ JSFlap.transform = function(selector) {
       JSFlap.removeTransition(JSFlap.values['prompted-transition']);
       delete JSFlap.values['prompted-transition'];
     }
+  });
+
+  document.querySelector('a[data-action="transition"]', menu).addEventListener('click', function(e) {
+    e.preventDefault();
+    JSFlap.values['active-transition'] = JSFlap.startTransition(JSFlap.values['contextmenu-state']);
+    JSFlap.menus[selector].classList.add('hidden');
+    delete JSFlap.values['contextmenu-state'];
   });
 
   document.querySelector('a[data-action="start-state"]', menu).addEventListener('click', function(e) {
@@ -230,15 +237,14 @@ JSFlap.dragState = function(e, state) {
   }
 }
 
-JSFlap.startTransition = function(e) {
-  var state = e.target;
+JSFlap.startTransition = function(state) {
   var container = state.getAttribute('container');
   var label = state.getAttribute('label');
-  var sx = state.getAttribute('cx');
-  var sy = state.getAttribute('cy');
+  var sx = parseInt(state.getAttribute('cx'));
+  var sy = parseInt(state.getAttribute('cy'));
   var svg = JSFlap.svgs[container];
-  var dx = e.pageX + svg.canvas.offsetLeft;
-  var dy = e.pageY + svg.canvas.offsetTop;
+  var dx = sx + 10;
+  var dy = sy + 10;
   var transition = JSFlap.SVG.create('path', { d: 'M' + sx + ',' + sy + ' L' + dx + ',' + dy, source: label, container: container });
   var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
   var arrowHead = JSFlap.getArrowHead({ x: dx, y: dy }, angle);
