@@ -89,7 +89,7 @@ JSFlap.transform = function(selector) {
 
     if ('delete-state' in JSFlap.values) {
       if (e.target.nodeName == 'circle') {
-        JSFlap.removeState(e, selector);
+        JSFlap.removeState(e.target);
       }
       delete JSFlap.values['delete-state'];
     }
@@ -137,6 +137,13 @@ JSFlap.transform = function(selector) {
     JSFlap.menus[selector].classList.add('hidden');
     delete JSFlap.values['contextmenu-state'];
   });
+
+  document.querySelector('a[data-action="delete-state"]', menu).addEventListener('click', function(e) {
+    e.preventDefault();
+    JSFlap.removeState(JSFlap.values['contextmenu-state']);
+    JSFlap.menus[selector].classList.add('hidden');
+    delete JSFlap.values['contextmenu-state'];
+  });
 }
 
 JSFlap.addState = function(e, selector) {
@@ -156,10 +163,11 @@ JSFlap.addState = function(e, selector) {
   return $state;
 }
 
-JSFlap.removeState = function(e, selector) {
+JSFlap.removeState = function(state) {
+  var selector = state.getAttribute('container');
   var svg = JSFlap.svgs[selector];
   var nfa = JSFlap.nfas[selector];
-  var labelToRemove = $(e.target).attr('label');
+  var labelToRemove = $(state).attr('label');
   var state = nfa.removeState(labelToRemove);
   $('.states circle[label="' + labelToRemove + '"]').remove();
   $('.labels p[label="' + labelToRemove + '"]').remove();
