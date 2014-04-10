@@ -10,7 +10,7 @@
   <script src="javascripts/regex2nfa.js"></script>
   <script src="javascripts/nfa2dfa.js"></script>
   <script src="javascripts/nfa-visualizer.js"></script>
-  <script src="javascripts/jsflap-v2.js"></script>
+  <script src="javascripts/jsflap.js"></script>
   <script src="javascripts/construct.js"></script>
   <title>automata</title>
 </head>
