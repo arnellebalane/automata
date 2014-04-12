@@ -167,15 +167,19 @@ JSFlap.removeState = function(state) {
   var selector = state.getAttribute('container');
   var svg = JSFlap.svgs[selector];
   var nfa = JSFlap.nfas[selector];
-  var labelToRemove = $(state).attr('label');
-  var state = nfa.removeState(labelToRemove);
-  $('.states circle[label="' + labelToRemove + '"]').remove();
-  $('.labels p[label="' + labelToRemove + '"]').remove();
-  $('.transitions path[source="' + labelToRemove + '"]').remove();
-  $('.transitions path[destination="' + labelToRemove + '"]').remove();
-  $('.arrow-heads path[for*="' + labelToRemove + '"]').remove();
-  $('.labels span[for*="' + labelToRemove + '"]').remove();
-  var indicator = document.querySelector('path.start-state-indicator[for="' + labelToRemove + '"]', svg.canvas);
+  var label = $(state).attr('label');
+  var state = nfa.removeState(label);
+  document.querySelector('.states circle[label="' + label + '"]').remove();
+  document.querySelector('.labels p[label="' + label + '"]').remove();
+  var selector = '.transitions path[source="' + label + '"], .transitions path[destination="' + label + '"]'
+    + ', .arrow-heads path[for*="' + label + '"], .labels span[for*="' + label + '"]';
+  var removeables = document.querySelectorAll(selector);
+  if (removeables) {
+    for (var i = 0; i < removeables.length; i++) {
+      removeables[i].remove();
+    }
+  }
+  var indicator = document.querySelector('path.start-state-indicator[for="' + label + '"]', svg.canvas);
   if (indicator) {
     nfa.setStartState(null);
     indicator.remove();
