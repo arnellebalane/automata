@@ -55,7 +55,7 @@ JSFlap.transform = function(selector) {
       if (e.target.nodeName == 'circle') {
         if (e.shiftKey) {
           JSFlap.values['active-transition'] = JSFlap.startTransition(e.target);
-        } else if (e.altKey) { 
+        } else if (e.altKey) {
           JSFlap.values['delete-state'] = e.target;
         } else {
           JSFlap.values['active-state'] = e.target;
@@ -149,8 +149,9 @@ JSFlap.transform = function(selector) {
 JSFlap.addState = function(e, selector) {
   var svg = JSFlap.svgs[selector];
   var nfa = JSFlap.nfas[selector];
-  var cx = e.pageX + svg.canvas.offsetLeft;
-  var cy = e.pageY + svg.canvas.offsetTop;
+  var rect = svg.canvas.getBoundingClientRect();
+  var cx = e.pageX + rect.left;
+  var cy = e.pageY + rect.top;
   var state = nfa.addState();
   var $state = JSFlap.SVG.create('circle', { cx: cx, cy: cy, r: 12, label: state.label, container: selector });
   var label = document.createElement('p');
@@ -191,8 +192,9 @@ JSFlap.dragState = function(e, state) {
   var label = state.getAttribute('label');
   var svg = JSFlap.svgs[container];
   var $label = document.querySelector('p[label="' + label + '"]', svg.labels);
-  var cx = e.pageX + svg.canvas.offsetLeft;
-  var cy = e.pageY + svg.canvas.offsetTop;
+  var rect = svg.canvas.getBoundingClientRect();
+  var cx = e.pageX + rect.left;
+  var cy = e.pageY + rect.top;
   state.setAttribute('cx', cx);
   state.setAttribute('cy', cy);
   $label.style.top = cy + 'px';
@@ -273,8 +275,9 @@ JSFlap.dragTransition = function(e, transition) {
   var source = document.querySelector('circle[label="' + label + '"]', svg.states);
   var sx = source.getAttribute('cx');
   var sy = source.getAttribute('cy');
-  var dx = e.pageX + svg.canvas.offsetLeft;
-  var dy = e.pageY + svg.canvas.offsetTop;
+  var rect = svg.canvas.getBoundingClientRect();
+  var dx = e.pageX + rect.left;
+  var dy = e.pageY + rect.top;
   transition.setAttribute('d', 'M' + sx + ',' + sy + 'L' + dx + ',' + dy);
   document.querySelector('path[for="active-transition"]', svg.arrowHeads).remove();
   var angle = Math.angle({ x: dx, y: dy }, { x: sx, y: sy });
@@ -445,9 +448,9 @@ JSFlap.getArrowHead = function(origin, angle) {
 }
 
 JSFlap.generatePathDefinition = function(source, control, destination) {
-  return 'M' +  source.x + ',' + source.y 
-    + ' C' + (source.x + control.x1) + ',' + (source.y + control.y1) + ' ' 
-    + (source.x + control.x2) + ',' + (source.y + control.y2) + ' ' 
+  return 'M' +  source.x + ',' + source.y
+    + ' C' + (source.x + control.x1) + ',' + (source.y + control.y1) + ' '
+    + (source.x + control.x2) + ',' + (source.y + control.y2) + ' '
     + destination.x + ',' + destination.y;
 }
 
