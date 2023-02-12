@@ -2,4 +2,4 @@
 
 Regular Expression parser and Nondeterministic/Deterministic Finite Automaton Constructor
 
-View the project at http://auto-mata.herokuapp.com/
+View the project at https://automata.arnelle.dev
